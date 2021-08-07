@@ -1,0 +1,8 @@
+.backgroundColor{
+    background-color: rgb(241, 241, 250);
+}
+.balanceCards{
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 0 20px 2px rgb(198, 198, 200);
+}
