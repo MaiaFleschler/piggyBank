@@ -1,15 +1,18 @@
-
-let storage: LocalStorage = getLocalStorage();
-
 const categoriesTable = document.getElementById('categoriesTable');
 
+const deleteCategory = (e) => {
+    const idCategory = e.target.dataset.id;
+    let storage: LocalStorage = getLocalStorage();
+    let updatedStorage = storage.categories.filter(item => item.id != idCategory);
+    localStorage.setItem('piggy-storage', JSON.stringify({...storage, categories: updatedStorage}));
+    loadCategories();
+}
+
 const loadCategories = () => {
-    console.log('entró');
     categoriesTable.innerHTML = "";
-   // let storage: LocalStorage = getLocalStorage();
+    let storage: LocalStorage = getLocalStorage();
     let categories = storage.categories;
     
-
     for(const category of categories){
         const tr = document.createElement('tr');
         const tdName = document.createElement('td');
@@ -32,14 +35,17 @@ const loadCategories = () => {
         tr.appendChild(tdEdit);
         tr.appendChild(tdDelete);
         
+        btnDelete.addEventListener('click', deleteCategory);
         categoriesTable.appendChild(tr);
     }
-
 }
+
+
 const formNewCategory = document.getElementById("formNewCategory");
 
 const addNewCategory = (e) =>{
-
+    let storage: LocalStorage = getLocalStorage();
+    console.log(storage, storage.categories);
     e.preventDefault();
     const form = e.target;
     const newCategoryName: string = form.name.value;
@@ -53,5 +59,6 @@ const addNewCategory = (e) =>{
     console.log(storage);
 }
 
+loadCategories();
 formNewCategory.addEventListener('submit', addNewCategory);
 
