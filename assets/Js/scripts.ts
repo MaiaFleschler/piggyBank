@@ -30,8 +30,6 @@ const getLocalStorage = (): LocalStorage =>{
     return storage;
 }
 
-//const storage1: LocalStorage = getLocalStorage();
-
 const getId = (storageArray) => {
     
     if(storageArray.length > 0) {
@@ -43,7 +41,15 @@ const getId = (storageArray) => {
  }
 
  //Add new categories to new operation categories select
-const setNewCategoryOption = () => {
+const selCategory = document.getElementById('selCategory');
+
+const setCategoriesOptions = () => {
     const storage: LocalStorage = getLocalStorage();
-    
+    storage.categories.forEach(element => {
+        const option = document.createElement('option');
+        const textOption = document.createTextNode(`${element.name}`);
+        option.appendChild(textOption);
+        selCategory.appendChild(option);
+    });
 }
+setCategoriesOptions();

@@ -8,7 +8,6 @@ var getLocalStorage = function () {
     }
     return storage;
 };
-var storage1 = getLocalStorage();
 var getId = function (storageArray) {
     if (storageArray.length > 0) {
         var lastItem = storageArray[storageArray.length - 1];
@@ -16,3 +15,15 @@ var getId = function (storageArray) {
     }
     return 1;
 };
+//Add new categories to new operation categories select
+var selCategory = document.getElementById('selCategory');
+var setCategoriesOptions = function () {
+    var storage = getLocalStorage();
+    storage.categories.forEach(function (element) {
+        var option = document.createElement('option');
+        var textOption = document.createTextNode("" + element.name);
+        option.appendChild(textOption);
+        selCategory.appendChild(option);
+    });
+};
+setCategoriesOptions();

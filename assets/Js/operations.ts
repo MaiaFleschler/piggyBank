@@ -1,5 +1,24 @@
 const operationsTable = document.getElementById("operationsTable");
 
+const deleteOperation = (e) => {
+    const idOperation = e.target.dataset.id;
+    let storage: LocalStorage = getLocalStorage();
+    let updatedStorage = storage.operations.filter(item => item.id != idOperation);
+    localStorage.setItem('piggy-storage', JSON.stringify({...storage, operations: updatedStorage}));
+    loadOperations();
+}
+
+const deleteOperationsWOCategory = () => {
+    let storage: LocalStorage = getLocalStorage();
+    const arrayCategorias = [];
+    storage.categories.forEach(element => {
+        arrayCategorias.push(element.name);
+    });
+    
+    let updatedStorage = storage.operations.filter(item => arrayCategorias.includes(item.category));
+    localStorage.setItem('piggy-storage', JSON.stringify({...storage, operations: updatedStorage}));
+}
+
 const loadOperations = () => {
     console.log("entró");
     operationsTable.innerHTML = "";
@@ -39,7 +58,8 @@ const loadOperations = () => {
         tr.appendChild(tdActions);
         
         operationsTable.appendChild(tr);
+        btnDelete.addEventListener('click', deleteOperation);
     }
 }
-
+deleteOperationsWOCategory();
 loadOperations();
