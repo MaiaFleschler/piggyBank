@@ -18,7 +18,6 @@ type Operation = {
     date: string
 }
 
-
 const getLocalStorage = (): LocalStorage =>{
     let storage: LocalStorage = JSON.parse(localStorage.getItem('piggy-storage'));
 
@@ -29,4 +28,22 @@ const getLocalStorage = (): LocalStorage =>{
         }
     }
     return storage;
+}
+
+//const storage1: LocalStorage = getLocalStorage();
+
+const getId = (storageArray) => {
+    
+    if(storageArray.length > 0) {
+       const lastItem = storageArray[storageArray.length -1];
+       return lastItem.id + 1;
+    } 
+ 
+    return 1;
+ }
+
+ //Add new categories to new operation categories select
+const setNewCategoryOption = () => {
+    const storage: LocalStorage = getLocalStorage();
+    
 }
