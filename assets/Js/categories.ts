@@ -19,8 +19,8 @@ const loadCategories = () => {
         const tdEdit = document.createElement('td');
         const tdDelete = document.createElement('td');
         const btnEdit = document.createElement('button');
+        btnEdit.setAttribute('onclick', `location.href="./categories-edit.html?id=${category.id}"`);
         const btnDelete = document.createElement('button');
-        btnEdit.dataset.id = `${category.id}`;
         btnDelete.dataset.id = `${category.id}`;
         const textName = document.createTextNode(category.name) 
         const textEdit = document.createTextNode('Edit');
@@ -39,7 +39,6 @@ const loadCategories = () => {
         categoriesTable.appendChild(tr);
     }
 }
-
 
 const formNewCategory = document.getElementById("formNewCategory");
 
@@ -61,4 +60,5 @@ const addNewCategory = (e) =>{
 
 loadCategories();
 formNewCategory.addEventListener('submit', addNewCategory);
+
 

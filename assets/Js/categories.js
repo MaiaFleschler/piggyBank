@@ -28,8 +28,9 @@ var loadCategories = function () {
         var tdEdit = document.createElement('td');
         var tdDelete = document.createElement('td');
         var btnEdit = document.createElement('button');
+        btnEdit.setAttribute('onclick', "location.href=\"./categories-edit.html?id=" + category.id + "\"");
         var btnDelete = document.createElement('button');
-        btnEdit.dataset.id = "" + category.id;
+        //   btnEdit.dataset.id = `${category.id}`;
         btnDelete.dataset.id = "" + category.id;
         var textName = document.createTextNode(category.name);
         var textEdit = document.createTextNode('Edit');
