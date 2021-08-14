@@ -8,6 +8,17 @@ const deleteOperation = (e) => {
     loadOperations();
 }
 
+const deleteOperationsWOCategory = () => {
+    let storage: LocalStorage = getLocalStorage();
+    const arrayCategorias = [];
+    storage.categories.forEach(element => {
+        arrayCategorias.push(element.name);
+    });
+    
+    let updatedStorage = storage.operations.filter(item => arrayCategorias.includes(item.category));
+    localStorage.setItem('piggy-storage', JSON.stringify({...storage, operations: updatedStorage}));
+}
+
 const loadOperations = () => {
     console.log("entró");
     operationsTable.innerHTML = "";
@@ -50,5 +61,5 @@ const loadOperations = () => {
         btnDelete.addEventListener('click', deleteOperation);
     }
 }
-
+deleteOperationsWOCategory();
 loadOperations();

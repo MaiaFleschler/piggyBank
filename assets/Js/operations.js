@@ -17,6 +17,15 @@ var deleteOperation = function (e) {
     localStorage.setItem('piggy-storage', JSON.stringify(__assign(__assign({}, storage), { operations: updatedStorage })));
     loadOperations();
 };
+var deleteOperationsWOCategory = function () {
+    var storage = getLocalStorage();
+    var arrayCategorias = [];
+    storage.categories.forEach(function (element) {
+        arrayCategorias.push(element.name);
+    });
+    var updatedStorage = storage.operations.filter(function (item) { return arrayCategorias.includes(item.category); });
+    localStorage.setItem('piggy-storage', JSON.stringify(__assign(__assign({}, storage), { operations: updatedStorage })));
+};
 var loadOperations = function () {
     console.log("entró");
     operationsTable.innerHTML = "";
@@ -57,4 +66,5 @@ var loadOperations = function () {
         btnDelete.addEventListener('click', deleteOperation);
     }
 };
+deleteOperationsWOCategory();
 loadOperations();
