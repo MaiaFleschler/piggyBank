@@ -1,5 +1,17 @@
 const param = new URLSearchParams(window.location.search);
 const formEditCategory = document.getElementById('formEditCategory');
+const inpName = document.getElementById('inpName');
+
+const showCurrValues = () => {
+    let storage: LocalStorage = getLocalStorage();
+    storage.categories.forEach(element => {
+        if(element.id == param.get("id")){
+            (<HTMLInputElement>inpName).value= element.name;
+        }
+    });
+}
+showCurrValues();
+
 
 const editCategory = (e) => {
     let storage: LocalStorage = getLocalStorage();
