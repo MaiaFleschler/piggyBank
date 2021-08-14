@@ -1,6 +1,3 @@
-
-
-
 const operationsTable = document.getElementById("operationsTable");
 
 const loadOperations = () => {
