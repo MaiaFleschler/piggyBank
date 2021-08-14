@@ -13,8 +13,8 @@ type Operation = {
     id: number,
     description: string,
     amount: number,
-    type: "spending"|"gain",
-    category: string[],
+    type: string,
+    category: string,
     date: string
 }
 
