@@ -1,23 +1,41 @@
-var formNewOperation = document.getElementById("formNewOperation");
-var addNewOperation = function (e) {
-    e.preventDefault();
+var operationsTable = document.getElementById("operationsTable");
+var loadOperations = function () {
+    console.log("entró");
+    operationsTable.innerHTML = "";
     var storage = getLocalStorage();
-    var form = e.target;
-    var newDescription = form.description.value;
-    var newAmount = form.amount.value;
-    var newType = form.type.value;
-    var newOperationCategory = form.category.value;
-    var newDate = form.date.value;
-    var newOperation = {
-        id: getId(storage.operations),
-        description: newDescription,
-        amount: newAmount,
-        type: newType,
-        category: newOperationCategory,
-        date: newDate
-    };
-    storage.operations.push(newOperation);
-    localStorage.setItem('piggy-storage', JSON.stringify(storage));
-    console.log(storage);
+    var operations = storage.operations;
+    for (var _i = 0, operations_1 = operations; _i < operations_1.length; _i++) {
+        var operation = operations_1[_i];
+        var tr = document.createElement('tr');
+        var tdDescription = document.createElement('td');
+        var tdCategory = document.createElement('td');
+        var tdDate = document.createElement('td');
+        var tdAmount = document.createElement('td');
+        var tdActions = document.createElement('td');
+        var btnEdit = document.createElement('button');
+        btnEdit.setAttribute('onclick', "location.href=\"./operations-edit.html?id=" + operation.id + "\"");
+        var btnDelete = document.createElement('button');
+        btnDelete.dataset.id = "" + operation.id;
+        var textDescription = document.createTextNode(operation.description);
+        var textCategory = document.createTextNode(operation.category);
+        var textDate = document.createTextNode(operation.date);
+        var textAmount = document.createTextNode("" + operation.amount);
+        var textEdit = document.createTextNode('Edit');
+        var textDelete = document.createTextNode('Delete');
+        tdDescription.appendChild(textDescription);
+        tdCategory.appendChild(textCategory);
+        tdDate.appendChild(textDate);
+        tdAmount.appendChild(textAmount);
+        btnEdit.appendChild(textEdit);
+        btnDelete.appendChild(textDelete);
+        tdActions.appendChild(btnEdit);
+        tdActions.appendChild(btnDelete);
+        tr.appendChild(tdDescription);
+        tr.appendChild(tdCategory);
+        tr.appendChild(tdDate);
+        tr.appendChild(tdAmount);
+        tr.appendChild(tdActions);
+        operationsTable.appendChild(tr);
+    }
 };
-formNewOperation.addEventListener('submit', addNewOperation);
+loadOperations();
