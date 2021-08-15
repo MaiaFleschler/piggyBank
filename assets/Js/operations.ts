@@ -20,7 +20,6 @@ const deleteOperationsWOCategory = () => {
 }
 
 const loadOperations = () => {
-    console.log("entró");
     operationsTable.innerHTML = "";
     let storage: LocalStorage = getLocalStorage();
     let operations = storage.operations;
@@ -39,14 +38,22 @@ const loadOperations = () => {
         const textDescription = document.createTextNode(operation.description);
         const textCategory = document.createTextNode(operation.category); 
         const textDate = document.createTextNode(operation.date); 
-        const textAmount = document.createTextNode(`${operation.amount}`);  
+        if(operation.type === "Expense"){
+            const textAmount = document.createTextNode(`${(operation.amount)*-1}`);
+            tdAmount.appendChild(textAmount);
+            tdAmount.style.color = "red";
+        } else {
+            const textAmount = document.createTextNode(`${operation.amount}`);
+            tdAmount.appendChild(textAmount);
+            tdAmount.style.color = "green";
+        }
         const textEdit = document.createTextNode('Edit');
         const textDelete = document.createTextNode('Delete');
         
         tdDescription.appendChild(textDescription);
         tdCategory.appendChild(textCategory);
         tdDate.appendChild(textDate);
-        tdAmount.appendChild(textAmount);
+        
         btnEdit.appendChild(textEdit);
         btnDelete.appendChild(textDelete);
         tdActions.appendChild(btnEdit);
@@ -63,3 +70,36 @@ const loadOperations = () => {
 }
 deleteOperationsWOCategory();
 loadOperations();
+
+const incomeTotal = document.getElementById('incomeTotal');
+const expenseTotal = document.getElementById('expenseTotal');
+const balanceTotal = document.getElementById('total');
+
+const showBalance = () => {
+    let storage: LocalStorage = getLocalStorage();
+    let totalExp = 0;
+    let totalInc = 0;
+    storage.operations.forEach(element => {
+        if(element.type == "Income"){
+            totalInc += Number(element.amount);
+        } else { 
+            totalExp += (Number(element.amount))*-1;
+        }
+    });
+    const total = totalInc + totalExp;
+    const pIncome = document.createElement('p');
+    pIncome.style.color = "green";
+    const pExpense = document.createElement('p');
+    pExpense.style.color = "red";
+    const pTotal = document.createElement('p');
+    const textIncome = document.createTextNode(`${totalInc}`);
+    const textExpense = document.createTextNode(`${totalExp}`);
+    const textTotal = document.createTextNode(`${total}`);
+    pIncome.appendChild(textIncome);
+    pExpense.appendChild(textExpense);
+    pTotal.appendChild(textTotal);
+    incomeTotal.appendChild(pIncome);
+    expenseTotal.appendChild(pExpense);
+    balanceTotal.appendChild(pTotal);
+}
+showBalance();

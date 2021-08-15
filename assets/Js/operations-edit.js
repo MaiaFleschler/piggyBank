@@ -22,8 +22,8 @@ var editOperation = function (e) {
     var storage = getLocalStorage();
     var form = e.target;
     var newDescription = form.description.value;
-    var newAmount = form.amount.value;
     var newType = form.type.value;
+    var newAmount = form.amount.value;
     var newCategory = form.category.value;
     var newDate = form.date.value;
     storage.operations.forEach(function (element) {

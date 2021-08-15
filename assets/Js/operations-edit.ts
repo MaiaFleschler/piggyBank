@@ -26,8 +26,8 @@ const editOperation = (e) => {
     
     const form = e.target;
     const newDescription: string = form.description.value;
-    const newAmount: string = form.amount.value;
     const newType: string = form.type.value;
+    const newAmount: number = form.amount.value; 
     const newCategory: string = form.category.value;
     const newDate: string = form.date.value;
 
