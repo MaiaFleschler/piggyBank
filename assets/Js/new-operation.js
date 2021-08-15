@@ -1,11 +1,10 @@
 var formNewOperation = document.getElementById("formNewOperation");
 var addNewOperation = function (e) {
-    // e.preventDefault();
     var storage = getLocalStorage();
     var form = e.target;
     var newDescription = form.description.value;
-    var newAmount = form.amount.value;
     var newType = form.type.value;
+    var newAmount = form.amount.value;
     var newOperationCategory = form.category.value;
     var newDate = form.date.value;
     var newOperation = {

@@ -27,7 +27,6 @@ var deleteOperationsWOCategory = function () {
     localStorage.setItem('piggy-storage', JSON.stringify(__assign(__assign({}, storage), { operations: updatedStorage })));
 };
 var loadOperations = function () {
-    console.log("entró");
     operationsTable.innerHTML = "";
     var storage = getLocalStorage();
     var operations = storage.operations;
@@ -46,13 +45,21 @@ var loadOperations = function () {
         var textDescription = document.createTextNode(operation.description);
         var textCategory = document.createTextNode(operation.category);
         var textDate = document.createTextNode(operation.date);
-        var textAmount = document.createTextNode("" + operation.amount);
+        if (operation.type === "Expense") {
+            var textAmount = document.createTextNode("" + (operation.amount) * -1);
+            tdAmount.appendChild(textAmount);
+            tdAmount.style.color = "red";
+        }
+        else {
+            var textAmount = document.createTextNode("" + operation.amount);
+            tdAmount.appendChild(textAmount);
+            tdAmount.style.color = "green";
+        }
         var textEdit = document.createTextNode('Edit');
         var textDelete = document.createTextNode('Delete');
         tdDescription.appendChild(textDescription);
         tdCategory.appendChild(textCategory);
         tdDate.appendChild(textDate);
-        tdAmount.appendChild(textAmount);
         btnEdit.appendChild(textEdit);
         btnDelete.appendChild(textDelete);
         tdActions.appendChild(btnEdit);
@@ -68,3 +75,35 @@ var loadOperations = function () {
 };
 deleteOperationsWOCategory();
 loadOperations();
+var incomeTotal = document.getElementById('incomeTotal');
+var expenseTotal = document.getElementById('expenseTotal');
+var balanceTotal = document.getElementById('total');
+var showBalance = function () {
+    var storage = getLocalStorage();
+    var totalExp = 0;
+    var totalInc = 0;
+    storage.operations.forEach(function (element) {
+        if (element.type == "Income") {
+            totalInc += Number(element.amount);
+        }
+        else {
+            totalExp += (Number(element.amount)) * -1;
+        }
+    });
+    var total = totalInc + totalExp;
+    var pIncome = document.createElement('p');
+    pIncome.style.color = "green";
+    var pExpense = document.createElement('p');
+    pExpense.style.color = "red";
+    var pTotal = document.createElement('p');
+    var textIncome = document.createTextNode("" + totalInc);
+    var textExpense = document.createTextNode("" + totalExp);
+    var textTotal = document.createTextNode("" + total);
+    pIncome.appendChild(textIncome);
+    pExpense.appendChild(textExpense);
+    pTotal.appendChild(textTotal);
+    incomeTotal.appendChild(pIncome);
+    expenseTotal.appendChild(pExpense);
+    balanceTotal.appendChild(pTotal);
+};
+showBalance();

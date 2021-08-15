@@ -1,12 +1,12 @@
 const formNewOperation = document.getElementById("formNewOperation");
 
 const addNewOperation = (e) =>{
-    // e.preventDefault();
-     let storage: LocalStorage = getLocalStorage();
-     const form = e.target;
-     const newDescription: string = form.description.value;
-     const newAmount: number = form.amount.value;
-     const newType: string = form.type.value;
+    let storage: LocalStorage = getLocalStorage();
+    const form = e.target;
+    const newDescription: string = form.description.value;
+    const newType: string = form.type.value;
+    const newAmount: number = form.amount.value; 
+
      const newOperationCategory: string = form.category.value;
      const newDate: string = form.date.value;
      const newOperation: Operation = {
