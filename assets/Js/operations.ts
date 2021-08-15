@@ -1,4 +1,8 @@
 const operationsTable = document.getElementById("operationsTable");
+const selectorType = document.getElementById("selType");
+const selectorCategory = document.getElementById("selCategory");
+const inputDate = document.getElementById("inpDate");
+const selectorOrderBy = document.getElementById("selOrderBy");
 
 const deleteOperation = (e) => {
     const idOperation = e.target.dataset.id;
@@ -19,55 +23,76 @@ const deleteOperationsWOCategory = () => {
     localStorage.setItem('piggy-storage', JSON.stringify({...storage, operations: updatedStorage}));
 }
 
-const loadOperations = () => {
-    operationsTable.innerHTML = "";
-    let storage: LocalStorage = getLocalStorage();
-    let operations = storage.operations;
-    
-    for(const operation of operations){
-        const tr = document.createElement('tr');
-        const tdDescription = document.createElement('td');
-        const tdCategory = document.createElement('td');
-        const tdDate = document.createElement('td');
-        const tdAmount = document.createElement('td');
-        const tdActions = document.createElement('td');
-        const btnEdit = document.createElement('button');
-        btnEdit.setAttribute('onclick', `location.href="./operations-edit.html?id=${operation.id}"`);
-        const btnDelete = document.createElement('button');
-        btnDelete.dataset.id = `${operation.id}`;
-        const textDescription = document.createTextNode(operation.description);
-        const textCategory = document.createTextNode(operation.category); 
-        const textDate = document.createTextNode(operation.date); 
-        if(operation.type === "Expense"){
-            const textAmount = document.createTextNode(`${(operation.amount)*-1}`);
-            tdAmount.appendChild(textAmount);
-            tdAmount.style.color = "red";
-        } else {
-            const textAmount = document.createTextNode(`${operation.amount}`);
-            tdAmount.appendChild(textAmount);
-            tdAmount.style.color = "green";
-        }
-        const textEdit = document.createTextNode('Edit');
-        const textDelete = document.createTextNode('Delete');
-        
-        tdDescription.appendChild(textDescription);
-        tdCategory.appendChild(textCategory);
-        tdDate.appendChild(textDate);
-        
-        btnEdit.appendChild(textEdit);
-        btnDelete.appendChild(textDelete);
-        tdActions.appendChild(btnEdit);
-        tdActions.appendChild(btnDelete)
-        tr.appendChild(tdDescription);
-        tr.appendChild(tdCategory);
-        tr.appendChild(tdDate);
-        tr.appendChild(tdAmount);
-        tr.appendChild(tdActions);
-        
-        operationsTable.appendChild(tr);
-        btnDelete.addEventListener('click', deleteOperation);
+const createRowTable = (operation) => {
+    const tr = document.createElement('tr');
+    const tdDescription = document.createElement('td');
+    const tdCategory = document.createElement('td');
+    const tdDate = document.createElement('td');
+    const tdAmount = document.createElement('td');
+    const tdActions = document.createElement('td');
+    const btnEdit = document.createElement('button');
+    btnEdit.setAttribute('onclick', `location.href="./operations-edit.html?id=${operation.id}"`);
+    const btnDelete = document.createElement('button');
+    btnDelete.dataset.id = `${operation.id}`;
+    const textDescription = document.createTextNode(operation.description);
+    const textCategory = document.createTextNode(operation.category); 
+    const textDate = document.createTextNode(operation.date); 
+    if(operation.type === "Expense"){
+        const textAmount = document.createTextNode(`${(operation.amount)*-1}`);
+        tdAmount.appendChild(textAmount);
+        tdAmount.style.color = "red";
+    } else {
+        const textAmount = document.createTextNode(`${operation.amount}`);
+        tdAmount.appendChild(textAmount);
+        tdAmount.style.color = "green";
     }
+    const textEdit = document.createTextNode('Edit');
+    const textDelete = document.createTextNode('Delete');
+        
+    tdDescription.appendChild(textDescription);
+    tdCategory.appendChild(textCategory);
+    tdDate.appendChild(textDate);
+        
+    btnEdit.appendChild(textEdit);
+    btnDelete.appendChild(textDelete);
+    tdActions.appendChild(btnEdit);
+    tdActions.appendChild(btnDelete)
+    tr.appendChild(tdDescription);
+    tr.appendChild(tdCategory);
+    tr.appendChild(tdDate);
+    tr.appendChild(tdAmount);
+    tr.appendChild(tdActions);
+        
+    operationsTable.appendChild(tr);
+    btnDelete.addEventListener('click', deleteOperation);
 }
+
+const loadOperations = () => {
+    let storage: LocalStorage = getLocalStorage();
+    let operationsAll = storage.operations;
+    for(const operation of operationsAll){
+        createRowTable(operation);}
+    let operationsIncome = storage.operations.filter(item => item.type != "Expense");
+    let operationsExpense = storage.operations.filter(item => item.type != "Income");
+    console.log(operationsIncome);
+    console.log(operationsExpense);
+    selectorType.addEventListener('change', (event) => {
+        if((<HTMLInputElement>event.target).value == "all"){
+            operationsTable.innerHTML = "";
+            for(const operation of operationsAll){
+                createRowTable(operation);}
+        } else if((<HTMLInputElement>event.target).value == "expense"){
+            operationsTable.innerHTML = "";
+            for(const operationc of operationsExpense){
+                createRowTable(operationc);}
+        } else if((<HTMLInputElement>event.target).value == "income"){
+            operationsTable.innerHTML = "";
+            for(const operatione of operationsIncome){
+                createRowTable(operatione);}
+        }
+    });
+}
+
 deleteOperationsWOCategory();
 loadOperations();
 
