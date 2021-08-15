@@ -78,10 +78,9 @@ var loadOperations = function () {
         var operation = operationsAll_1[_i];
         createRowTable(operation);
     }
+    //Filter Type
     var operationsIncome = storage.operations.filter(function (item) { return item.type != "Expense"; });
     var operationsExpense = storage.operations.filter(function (item) { return item.type != "Income"; });
-    console.log(operationsIncome);
-    console.log(operationsExpense);
     selectorType.addEventListener('change', function (event) {
         if (event.target.value == "all") {
             operationsTable.innerHTML = "";
@@ -93,15 +92,33 @@ var loadOperations = function () {
         else if (event.target.value == "expense") {
             operationsTable.innerHTML = "";
             for (var _a = 0, operationsExpense_1 = operationsExpense; _a < operationsExpense_1.length; _a++) {
-                var operationc = operationsExpense_1[_a];
-                createRowTable(operationc);
+                var operation = operationsExpense_1[_a];
+                createRowTable(operation);
             }
         }
         else if (event.target.value == "income") {
             operationsTable.innerHTML = "";
             for (var _b = 0, operationsIncome_1 = operationsIncome; _b < operationsIncome_1.length; _b++) {
-                var operatione = operationsIncome_1[_b];
-                createRowTable(operatione);
+                var operation = operationsIncome_1[_b];
+                createRowTable(operation);
+            }
+        }
+    });
+    //Filter Category
+    selectorCategory.addEventListener('change', function (event) {
+        if (event.target.value == "all") {
+            operationsTable.innerHTML = "";
+            for (var _i = 0, operationsAll_3 = operationsAll; _i < operationsAll_3.length; _i++) {
+                var operation = operationsAll_3[_i];
+                createRowTable(operation);
+            }
+        }
+        else {
+            var operationsByCat = storage.operations.filter(function (item) { return item.category == selectorCategory.value; });
+            operationsTable.innerHTML = "";
+            for (var _a = 0, operationsByCat_1 = operationsByCat; _a < operationsByCat_1.length; _a++) {
+                var operation = operationsByCat_1[_a];
+                createRowTable(operation);
             }
         }
     });

@@ -71,11 +71,12 @@ const loadOperations = () => {
     let storage: LocalStorage = getLocalStorage();
     let operationsAll = storage.operations;
     for(const operation of operationsAll){
-        createRowTable(operation);}
+        createRowTable(operation);
+    }
+
+    //Filter Type
     let operationsIncome = storage.operations.filter(item => item.type != "Expense");
     let operationsExpense = storage.operations.filter(item => item.type != "Income");
-    console.log(operationsIncome);
-    console.log(operationsExpense);
     selectorType.addEventListener('change', (event) => {
         if((<HTMLInputElement>event.target).value == "all"){
             operationsTable.innerHTML = "";
@@ -83,14 +84,31 @@ const loadOperations = () => {
                 createRowTable(operation);}
         } else if((<HTMLInputElement>event.target).value == "expense"){
             operationsTable.innerHTML = "";
-            for(const operationc of operationsExpense){
-                createRowTable(operationc);}
+            for(const operation of operationsExpense){
+                createRowTable(operation);}
         } else if((<HTMLInputElement>event.target).value == "income"){
             operationsTable.innerHTML = "";
-            for(const operatione of operationsIncome){
-                createRowTable(operatione);}
+            for(const operation of operationsIncome){
+                createRowTable(operation);}
         }
     });
+
+    //Filter Category
+    
+    selectorCategory.addEventListener('change', (event) => {
+        if((<HTMLInputElement>event.target).value == "all"){
+            operationsTable.innerHTML = "";
+            for(const operation of operationsAll){
+                createRowTable(operation);
+            } 
+        } else {
+        let operationsByCat = storage.operations.filter(item => item.category == (<HTMLInputElement>selectorCategory).value);
+        operationsTable.innerHTML = "";
+            for(const operation of operationsByCat){
+                createRowTable(operation);
+            }
+        }
+    }
 }
 
 deleteOperationsWOCategory();
