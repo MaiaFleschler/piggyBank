@@ -1,4 +1,6 @@
 var formNewOperation = document.getElementById("formNewOperation");
+var inpDate = document.getElementById("inpDate");
+inpDate.valueAsDate = new Date();
 var addNewOperation = function (e) {
     var storage = getLocalStorage();
     var form = e.target;

@@ -14,6 +14,7 @@ var selectorType = document.getElementById("selType");
 var selectorCategory = document.getElementById("selCategory");
 var inputDate = document.getElementById("inpDate");
 var selectorOrderBy = document.getElementById("selOrderBy");
+inputDate.valueAsDate = new Date();
 var deleteOperation = function (e) {
     var idOperation = e.target.dataset.id;
     var storage = getLocalStorage();
@@ -79,13 +80,13 @@ var loadOperations = function () {
         createRowTable(operation);
     }
     //Filter Type
-    var operationsIncome = storage.operations.filter(function (item) { return item.type != "Expense"; });
-    var operationsExpense = storage.operations.filter(function (item) { return item.type != "Income"; });
+    var operationsIncome = storage.operations.filter(function (item) { return item.type == "Income"; });
+    var operationsExpense = storage.operations.filter(function (item) { return item.type == "Expense"; });
     selectorType.addEventListener('change', function (event) {
         if (event.target.value == "all") {
             operationsTable.innerHTML = "";
-            for (var _i = 0, operationsAll_2 = operationsAll; _i < operationsAll_2.length; _i++) {
-                var operation = operationsAll_2[_i];
+            for (var _i = 0, operationsAll_3 = operationsAll; _i < operationsAll_3.length; _i++) {
+                var operation = operationsAll_3[_i];
                 createRowTable(operation);
             }
         }
@@ -108,8 +109,8 @@ var loadOperations = function () {
     selectorCategory.addEventListener('change', function (event) {
         if (event.target.value == "all") {
             operationsTable.innerHTML = "";
-            for (var _i = 0, operationsAll_3 = operationsAll; _i < operationsAll_3.length; _i++) {
-                var operation = operationsAll_3[_i];
+            for (var _i = 0, operationsAll_4 = operationsAll; _i < operationsAll_4.length; _i++) {
+                var operation = operationsAll_4[_i];
                 createRowTable(operation);
             }
         }
@@ -118,6 +119,32 @@ var loadOperations = function () {
             operationsTable.innerHTML = "";
             for (var _a = 0, operationsByCat_1 = operationsByCat; _a < operationsByCat_1.length; _a++) {
                 var operation = operationsByCat_1[_a];
+                createRowTable(operation);
+            }
+        }
+    });
+    //Filter Date
+    var d = new Date(), month = '' + (d.getMonth() + 1), day = '' + d.getDate(), year = d.getFullYear();
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
+    var selectedDate = [year, month, day].join('-');
+    operationsTable.innerHTML = "";
+    for (var _a = 0, operationsAll_2 = operationsAll; _a < operationsAll_2.length; _a++) {
+        var operation = operationsAll_2[_a];
+        if (operation.date >= selectedDate) {
+            createRowTable(operation);
+        }
+    }
+    inputDate.addEventListener('change', function (event) {
+        console.log(selectedDate);
+        selectedDate = inputDate.value;
+        console.log(selectedDate);
+        operationsTable.innerHTML = "";
+        for (var _i = 0, operationsAll_5 = operationsAll; _i < operationsAll_5.length; _i++) {
+            var operation = operationsAll_5[_i];
+            if (operation.date >= selectedDate) {
                 createRowTable(operation);
             }
         }
