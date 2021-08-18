@@ -70,83 +70,42 @@ const createRowTable = (operation) => {
     btnDelete.addEventListener('click', deleteOperation);
 }
 
+const filterOperations = () => {
+    let storage: LocalStorage = getLocalStorage();
+    let operationsAll = storage.operations;
+    const selectorTypeValue = (<HTMLInputElement>selectorType).value;
+    const selectorCategoryValue = (<HTMLInputElement>selectorCategory).value;
+    const selectorDateValue = new Date((<HTMLInputElement>inputDate).value);
+
+    const operationsByType = operationsAll.filter(item => selectorTypeValue == "All" || item.type == selectorTypeValue);
+
+    const operationsByCategory = operationsByType.filter(item => selectorCategoryValue == "All" || item.category == selectorCategoryValue);
+
+    const operationsByDate = operationsByCategory.filter(item => selectorDateValue <= (new Date(item.date)));
+
+    operationsTable.innerHTML = "";
+    for(const operation of operationsByDate){
+    createRowTable(operation);
+    }
+}
+
 const loadOperations = () => {
     let storage: LocalStorage = getLocalStorage();
     let operationsAll = storage.operations;
-    for(const operation of operationsAll){
+    //Filter by date from today to start
+    const operationsfromToday = operationsAll.filter(item => new Date() <= (new Date(item.date)));
+    for(const operation of operationsfromToday){
         createRowTable(operation);
     }
 
     //Filter Type
-    let operationsIncome = storage.operations.filter(item => item.type == "Income");
-    let operationsExpense = storage.operations.filter(item => item.type == "Expense");
-    selectorType.addEventListener('change', (event) => {
-        if((<HTMLInputElement>event.target).value == "all"){
-            operationsTable.innerHTML = "";
-            for(const operation of operationsAll){
-                createRowTable(operation);
-            }
-        } else if((<HTMLInputElement>event.target).value == "expense"){
-            operationsTable.innerHTML = "";
-            for(const operation of operationsExpense){
-                createRowTable(operation);
-            }
-        } else if((<HTMLInputElement>event.target).value == "income"){
-            operationsTable.innerHTML = "";
-            for(const operation of operationsIncome){
-                createRowTable(operation);
-            }
-        }
-    });
-
+    selectorType.addEventListener('change', filterOperations);
     //Filter Category
-    
-    selectorCategory.addEventListener('change', (event) => {
-        if((<HTMLInputElement>event.target).value == "all"){
-            operationsTable.innerHTML = "";
-            for(const operation of operationsAll){
-                createRowTable(operation);
-            } 
-        } else {
-        let operationsByCat = storage.operations.filter(item => item.category == (<HTMLInputElement>selectorCategory).value);
-        operationsTable.innerHTML = "";
-            for(const operation of operationsByCat){
-                createRowTable(operation);
-            }
-        }
-    });
-
+    selectorCategory.addEventListener('change', filterOperations);
     //Filter Date
-    let d = new Date(),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-    if (month.length < 2) 
-        month = '0' + month;
-    if (day.length < 2) 
-        day = '0' + day;
-    let selectedDate = [year, month, day].join('-');
-    operationsTable.innerHTML = "";
-    for(const operation of operationsAll){
-        if(operation.date >= selectedDate){
-            createRowTable(operation);
-        }
-    }
-    inputDate.addEventListener('change', (event) => {
-        
-        console.log(selectedDate);
-        selectedDate = (<HTMLInputElement>inputDate).value;
-        console.log(selectedDate);
-        operationsTable.innerHTML = "";
-        for(const operation of operationsAll){
-            if(operation.date >= selectedDate){
-                createRowTable(operation);
-            }
-        }
-    });
+    inputDate.addEventListener('change', filterOperations);
+
 }
-
-
 
 deleteOperationsWOCategory();
 loadOperations();

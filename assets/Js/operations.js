@@ -72,83 +72,36 @@ var createRowTable = function (operation) {
     operationsTable.appendChild(tr);
     btnDelete.addEventListener('click', deleteOperation);
 };
+var filterOperations = function () {
+    var storage = getLocalStorage();
+    var operationsAll = storage.operations;
+    var selectorTypeValue = selectorType.value;
+    var selectorCategoryValue = selectorCategory.value;
+    var selectorDateValue = new Date(inputDate.value);
+    var operationsByType = operationsAll.filter(function (item) { return selectorTypeValue == "All" || item.type == selectorTypeValue; });
+    var operationsByCategory = operationsByType.filter(function (item) { return selectorCategoryValue == "All" || item.category == selectorCategoryValue; });
+    var operationsByDate = operationsByCategory.filter(function (item) { return selectorDateValue <= (new Date(item.date)); });
+    operationsTable.innerHTML = "";
+    for (var _i = 0, operationsByDate_1 = operationsByDate; _i < operationsByDate_1.length; _i++) {
+        var operation = operationsByDate_1[_i];
+        createRowTable(operation);
+    }
+};
 var loadOperations = function () {
     var storage = getLocalStorage();
     var operationsAll = storage.operations;
-    for (var _i = 0, operationsAll_1 = operationsAll; _i < operationsAll_1.length; _i++) {
-        var operation = operationsAll_1[_i];
+    //Filter by date from today to start
+    var operationsfromToday = operationsAll.filter(function (item) { return new Date() <= (new Date(item.date)); });
+    for (var _i = 0, operationsfromToday_1 = operationsfromToday; _i < operationsfromToday_1.length; _i++) {
+        var operation = operationsfromToday_1[_i];
         createRowTable(operation);
     }
     //Filter Type
-    var operationsIncome = storage.operations.filter(function (item) { return item.type == "Income"; });
-    var operationsExpense = storage.operations.filter(function (item) { return item.type == "Expense"; });
-    selectorType.addEventListener('change', function (event) {
-        if (event.target.value == "all") {
-            operationsTable.innerHTML = "";
-            for (var _i = 0, operationsAll_3 = operationsAll; _i < operationsAll_3.length; _i++) {
-                var operation = operationsAll_3[_i];
-                createRowTable(operation);
-            }
-        }
-        else if (event.target.value == "expense") {
-            operationsTable.innerHTML = "";
-            for (var _a = 0, operationsExpense_1 = operationsExpense; _a < operationsExpense_1.length; _a++) {
-                var operation = operationsExpense_1[_a];
-                createRowTable(operation);
-            }
-        }
-        else if (event.target.value == "income") {
-            operationsTable.innerHTML = "";
-            for (var _b = 0, operationsIncome_1 = operationsIncome; _b < operationsIncome_1.length; _b++) {
-                var operation = operationsIncome_1[_b];
-                createRowTable(operation);
-            }
-        }
-    });
+    selectorType.addEventListener('change', filterOperations);
     //Filter Category
-    selectorCategory.addEventListener('change', function (event) {
-        if (event.target.value == "all") {
-            operationsTable.innerHTML = "";
-            for (var _i = 0, operationsAll_4 = operationsAll; _i < operationsAll_4.length; _i++) {
-                var operation = operationsAll_4[_i];
-                createRowTable(operation);
-            }
-        }
-        else {
-            var operationsByCat = storage.operations.filter(function (item) { return item.category == selectorCategory.value; });
-            operationsTable.innerHTML = "";
-            for (var _a = 0, operationsByCat_1 = operationsByCat; _a < operationsByCat_1.length; _a++) {
-                var operation = operationsByCat_1[_a];
-                createRowTable(operation);
-            }
-        }
-    });
+    selectorCategory.addEventListener('change', filterOperations);
     //Filter Date
-    var d = new Date(), month = '' + (d.getMonth() + 1), day = '' + d.getDate(), year = d.getFullYear();
-    if (month.length < 2)
-        month = '0' + month;
-    if (day.length < 2)
-        day = '0' + day;
-    var selectedDate = [year, month, day].join('-');
-    operationsTable.innerHTML = "";
-    for (var _a = 0, operationsAll_2 = operationsAll; _a < operationsAll_2.length; _a++) {
-        var operation = operationsAll_2[_a];
-        if (operation.date >= selectedDate) {
-            createRowTable(operation);
-        }
-    }
-    inputDate.addEventListener('change', function (event) {
-        console.log(selectedDate);
-        selectedDate = inputDate.value;
-        console.log(selectedDate);
-        operationsTable.innerHTML = "";
-        for (var _i = 0, operationsAll_5 = operationsAll; _i < operationsAll_5.length; _i++) {
-            var operation = operationsAll_5[_i];
-            if (operation.date >= selectedDate) {
-                createRowTable(operation);
-            }
-        }
-    });
+    inputDate.addEventListener('change', filterOperations);
 };
 deleteOperationsWOCategory();
 loadOperations();
