@@ -1,4 +1,7 @@
 const formNewOperation = document.getElementById("formNewOperation");
+const inpDate = document.getElementById("inpDate");
+
+(<HTMLInputElement>inpDate).valueAsDate = new Date();
 
 const addNewOperation = (e) =>{
     let storage: LocalStorage = getLocalStorage();
