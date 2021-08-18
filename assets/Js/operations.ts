@@ -3,7 +3,7 @@ const selectorType = document.getElementById("selType");
 const selectorCategory = document.getElementById("selCategory");
 const inputDate = document.getElementById("inpDate");
 const selectorOrderBy = document.getElementById("selOrderBy");
-
+const selOrderBy = document.getElementById("selOrderBy");
 
 (<HTMLInputElement>inputDate).valueAsDate = new Date();
 
@@ -70,18 +70,38 @@ const createRowTable = (operation) => {
     btnDelete.addEventListener('click', deleteOperation);
 }
 
+const orderList = (operations) => {
+    const selectorOrderByValue = (<HTMLInputElement>selOrderBy).value;
+    if(selectorOrderByValue == "lessAmount"){
+        operations.sort((a,b) => a.amount - b.amount);
+    } else if(selectorOrderByValue == "biggerAmount"){
+        operations.sort((a,b) => b.amount - a.amount);
+    } else if(selectorOrderByValue == "az"){
+        operations.sort((a,b)=>{let x = a.description.toUpperCase(), y = b.description.toUpperCase(); return x==y?0:x>y?1:-1;})
+    } else if(selectorOrderByValue == "za"){
+        operations.sort((a,b)=>{let x = b.description.toUpperCase(), y = a.description.toUpperCase(); return x==y?0:x>y?1:-1;})
+    } else if(selectorOrderByValue == "lessRecent"){
+        operations.sort((a,b) =>{let x = a.date, y = b.date; return x==y?0:x>y?1:-1;})
+    }  else if(selectorOrderByValue == "moreRecent"){
+        operations.sort((a,b) =>{let x = b.date, y = a.date; return x==y?0:x>y?1:-1;})
+    }
+}
+
 const filterOperations = () => {
     let storage: LocalStorage = getLocalStorage();
     let operationsAll = storage.operations;
     const selectorTypeValue = (<HTMLInputElement>selectorType).value;
     const selectorCategoryValue = (<HTMLInputElement>selectorCategory).value;
     const selectorDateValue = new Date((<HTMLInputElement>inputDate).value);
+       
 
     const operationsByType = operationsAll.filter(item => selectorTypeValue == "All" || item.type == selectorTypeValue);
 
     const operationsByCategory = operationsByType.filter(item => selectorCategoryValue == "All" || item.category == selectorCategoryValue);
 
     const operationsByDate = operationsByCategory.filter(item => selectorDateValue <= (new Date(item.date)));
+    
+    orderList(operationsByDate);
 
     operationsTable.innerHTML = "";
     for(const operation of operationsByDate){
@@ -94,6 +114,7 @@ const loadOperations = () => {
     let operationsAll = storage.operations;
     //Filter by date from today to start
     const operationsfromToday = operationsAll.filter(item => new Date() <= (new Date(item.date)));
+    orderList(operationsfromToday);
     for(const operation of operationsfromToday){
         createRowTable(operation);
     }
@@ -104,6 +125,8 @@ const loadOperations = () => {
     selectorCategory.addEventListener('change', filterOperations);
     //Filter Date
     inputDate.addEventListener('change', filterOperations);
+    //Order By
+    selOrderBy.addEventListener('change', filterOperations);
 
 }
 

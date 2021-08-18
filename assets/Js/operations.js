@@ -14,6 +14,7 @@ var selectorType = document.getElementById("selType");
 var selectorCategory = document.getElementById("selCategory");
 var inputDate = document.getElementById("inpDate");
 var selectorOrderBy = document.getElementById("selOrderBy");
+var selOrderBy = document.getElementById("selOrderBy");
 inputDate.valueAsDate = new Date();
 var deleteOperation = function (e) {
     var idOperation = e.target.dataset.id;
@@ -72,6 +73,27 @@ var createRowTable = function (operation) {
     operationsTable.appendChild(tr);
     btnDelete.addEventListener('click', deleteOperation);
 };
+var orderList = function (operations) {
+    var selectorOrderByValue = selOrderBy.value;
+    if (selectorOrderByValue == "lessAmount") {
+        operations.sort(function (a, b) { return a.amount - b.amount; });
+    }
+    else if (selectorOrderByValue == "biggerAmount") {
+        operations.sort(function (a, b) { return b.amount - a.amount; });
+    }
+    else if (selectorOrderByValue == "az") {
+        operations.sort(function (a, b) { var x = a.description.toUpperCase(), y = b.description.toUpperCase(); return x == y ? 0 : x > y ? 1 : -1; });
+    }
+    else if (selectorOrderByValue == "za") {
+        operations.sort(function (a, b) { var x = b.description.toUpperCase(), y = a.description.toUpperCase(); return x == y ? 0 : x > y ? 1 : -1; });
+    }
+    else if (selectorOrderByValue == "lessRecent") {
+        operations.sort(function (a, b) { var x = a.date, y = b.date; return x == y ? 0 : x > y ? 1 : -1; });
+    }
+    else if (selectorOrderByValue == "moreRecent") {
+        operations.sort(function (a, b) { var x = b.date, y = a.date; return x == y ? 0 : x > y ? 1 : -1; });
+    }
+};
 var filterOperations = function () {
     var storage = getLocalStorage();
     var operationsAll = storage.operations;
@@ -81,6 +103,7 @@ var filterOperations = function () {
     var operationsByType = operationsAll.filter(function (item) { return selectorTypeValue == "All" || item.type == selectorTypeValue; });
     var operationsByCategory = operationsByType.filter(function (item) { return selectorCategoryValue == "All" || item.category == selectorCategoryValue; });
     var operationsByDate = operationsByCategory.filter(function (item) { return selectorDateValue <= (new Date(item.date)); });
+    orderList(operationsByDate);
     operationsTable.innerHTML = "";
     for (var _i = 0, operationsByDate_1 = operationsByDate; _i < operationsByDate_1.length; _i++) {
         var operation = operationsByDate_1[_i];
@@ -92,6 +115,7 @@ var loadOperations = function () {
     var operationsAll = storage.operations;
     //Filter by date from today to start
     var operationsfromToday = operationsAll.filter(function (item) { return new Date() <= (new Date(item.date)); });
+    orderList(operationsfromToday);
     for (var _i = 0, operationsfromToday_1 = operationsfromToday; _i < operationsfromToday_1.length; _i++) {
         var operation = operationsfromToday_1[_i];
         createRowTable(operation);
@@ -102,6 +126,8 @@ var loadOperations = function () {
     selectorCategory.addEventListener('change', filterOperations);
     //Filter Date
     inputDate.addEventListener('change', filterOperations);
+    //Order By
+    selOrderBy.addEventListener('change', filterOperations);
 };
 deleteOperationsWOCategory();
 loadOperations();
