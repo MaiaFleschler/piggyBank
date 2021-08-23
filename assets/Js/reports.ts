@@ -1,6 +1,9 @@
-// RESUME
+// TABLES DOM
 const resumeTable = document.getElementById('resumeTable');
+const totalsByCategoryTable = document.getElementById('totalsByCategoryTable');
+const totalsByMonthTable = document.getElementById('totalsByMonthTable');
 
+// RESUME
 const createResumeTable = (description, character, amount) => {
     const tr = document.createElement('tr');
     const tdDescription = document.createElement('td');
@@ -90,9 +93,7 @@ const reportsResumeByCategory = () => {
 }
 
 // TOTAL BY CATEGORY
-const totalsByCategoryTable = document.getElementById('totalsByCategoryTable');
-
-const createTotalsTable = (category, earnings, spendings, balance) =>{
+const createTotalsTable = (category, earnings, spendings, balance, domTable) =>{
     const tr = document.createElement('tr');
     const tdCategory = document.createElement('td');
     const tdEarnings = document.createElement('td');
@@ -113,7 +114,7 @@ const createTotalsTable = (category, earnings, spendings, balance) =>{
     tr.appendChild(tdSpendings);
     tr.appendChild(tdBalance);
         
-    totalsByCategoryTable.appendChild(tr);
+    domTable.appendChild(tr);
 }
 
 const reportsTotalByCategory = () =>{
@@ -121,8 +122,6 @@ const reportsTotalByCategory = () =>{
 
     storage.categories.forEach(element=>{
         let byCategory = storage.operations.filter(item => item.category === element.name);
-        console.log(`by category${byCategory}`)
-        console.log(storage)
         let totalExp= 0;
         let totalInc= 0;
         byCategory.forEach(element => {
@@ -134,14 +133,73 @@ const reportsTotalByCategory = () =>{
             }
         });
         let balance = getBalance(byCategory)
-        createTotalsTable(element.name, totalInc, totalExp, balance);
+        createTotalsTable(element.name, totalInc, totalExp, balance, totalsByCategoryTable);
     }
 };
+
+
+// TOTALS BY MONTH
+const getTotalsByDate = () => {
+    let storage: LocalStorage = getLocalStorage();  
+    let totalsOperations = {};
+    let operations = storage.operations;
+
+    operations.forEach( (operation) => {
+        const date = new Date(operation.date);
+
+        if(!totalsOperations[date.getFullYear()]) {
+            totalsOperations[date.getFullYear()] = {};
+        } 
+        if(!totalsOperations[date.getFullYear()][date.getMonth()+1]){
+            totalsOperations[date.getFullYear()][date.getMonth()+1] = [];
+        }
+        totalsOperations[date.getFullYear()][date.getMonth()+1].push(operation.type === "Expense" ? operation.amount * -1 : operation.amount);
+    });
+    return totalsOperations;
+};
+
+const getReportsByDate = () => {
+    const totalsOperations = getTotalsByDate();
+//   let highestEarning = 0;
+//   let highestSpending = 0;
+//   let highestEarningMonth;
+//   let highestSpendingMonth;
+    for (let year in totalsOperations){
+        let totalExp = 0;
+        let totalInc = 0;
+        let balance = 0;
+        for (let month in totalsOperations[year]){
+            totalsOperations[year][month].forEach(element => {
+                if(Number(element) < 0){
+                   totalExp += Number(element);
+                } else { 
+                    totalInc += Number(element);
+                }
+            });
+            
+    //        if(highestEarning < totalInc){
+    //            highestEarning = totalInc;
+    //            highestEarningMonth = month;
+    //        }
+    //        if(highestSpending < totalExp){
+    //            highestSpending = totalExp;
+    //            highestSpendingMonth = month;
+    //        }
+    //    console.log(`highestEarning ${highestEarning}, highestSpending${highestSpending}, earningMonth ${highestEarningMonth}, spendingMonth ${highestSpendingMonth}`);
+        balance = totalExp + totalInc;
+        const date = `${month}/${year}`
+        createTotalsTable(date, totalInc, totalExp, balance, totalsByMonthTable);
+        };
+    }
+};
+
+
 
 let storage: LocalStorage = getLocalStorage();
 if(storage.operations.length > 3){
     reportsResumeByCategory();
     reportsTotalByCategory();
+    getReportsByDate();
 }else{
     console.log(storage.operations.length)
     alert('Not enough operations');
