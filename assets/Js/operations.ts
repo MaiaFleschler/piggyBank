@@ -1,9 +1,12 @@
 const operationsTable = document.getElementById("operationsTable");
+const operationsTableBody = document.getElementById("operationsTableBody");
 const selectorType = document.getElementById("selType");
 const selectorCategory = document.getElementById("selCategory");
 const inputDate = document.getElementById("inpDate");
 const selectorOrderBy = document.getElementById("selOrderBy");
 const selOrderBy = document.getElementById("selOrderBy");
+const mainImage = document.getElementById("mainImage");
+
 
 (<HTMLInputElement>inputDate).valueAsDate = new Date();
 
@@ -35,8 +38,10 @@ const createRowTable = (operation) => {
     const tdActions = document.createElement('td');
     const btnEdit = document.createElement('button');
     btnEdit.setAttribute('onclick', `location.href="./operations-edit.html?id=${operation.id}"`);
+    btnEdit.classList.add('btn-action');
     const btnDelete = document.createElement('button');
     btnDelete.dataset.id = `${operation.id}`;
+    btnDelete.classList.add('btn-action');
     const textDescription = document.createTextNode(operation.description);
     const textCategory = document.createTextNode(operation.category); 
     const textDate = document.createTextNode(operation.date); 
@@ -66,7 +71,7 @@ const createRowTable = (operation) => {
     tr.appendChild(tdAmount);
     tr.appendChild(tdActions);
         
-    operationsTable.appendChild(tr);
+    operationsTableBody.appendChild(tr);
     btnDelete.addEventListener('click', deleteOperation);
 }
 
@@ -94,31 +99,47 @@ const filterOperations = () => {
     const selectorCategoryValue = (<HTMLInputElement>selectorCategory).value;
     const selectorDateValue = new Date((<HTMLInputElement>inputDate).value);
        
-
     const operationsByType = operationsAll.filter(item => selectorTypeValue == "All" || item.type == selectorTypeValue);
 
     const operationsByCategory = operationsByType.filter(item => selectorCategoryValue == "All" || item.category == selectorCategoryValue);
 
     const operationsByDate = operationsByCategory.filter(item => selectorDateValue <= (new Date(item.date)));
-    
-    orderList(operationsByDate);
 
-    operationsTable.innerHTML = "";
-    for(const operation of operationsByDate){
-    createRowTable(operation);
+    if(operationsByDate.length === 0){
+        operationsTable.classList.add('d-none');
+        mainImage.classList.remove('d-none');
+    }else{
+        operationsTable.classList.remove('d-none');
+        mainImage.classList.add('d-none');
+        operationsTableBody.innerHTML = "";
+        orderList(operationsByDate);
+        for(const operation of operationsByDate){
+            createRowTable(operation);
+        }
     }
 }
 
-const loadOperations = () => {
+const loadOperationsBeginning = () => {
     let storage: LocalStorage = getLocalStorage();
     let operationsAll = storage.operations;
     //Filter by date from today to start
-    const operationsfromToday = operationsAll.filter(item => new Date() <= (new Date(item.date)));
-    orderList(operationsfromToday);
-    for(const operation of operationsfromToday){
-        createRowTable(operation);
-    }
+    const operationsFromToday = operationsAll.filter(item => new Date() <= (new Date(item.date)));
 
+    if(operationsFromToday.length === 0){
+        operationsTable.classList.add('d-none');
+        mainImage.classList.remove('d-none');
+    }else{
+        operationsTable.classList.remove('d-none');
+        mainImage.classList.add('d-none');
+        operationsTableBody.innerHTML = "";
+        orderList(operationsFromToday);
+        for(const operation of operationsFromToday){
+            createRowTable(operation);
+        }
+    }
+}
+const loadOperations = () => {
+    filterOperations();
     //Filter Type
     selectorType.addEventListener('change', filterOperations);
     //Filter Category
@@ -127,12 +148,13 @@ const loadOperations = () => {
     inputDate.addEventListener('change', filterOperations);
     //Order By
     selOrderBy.addEventListener('change', filterOperations);
-
 }
 
 deleteOperationsWOCategory();
 loadOperations();
+loadOperationsBeginning();
 
+// BALANCE
 const incomeTotal = document.getElementById('incomeTotal');
 const expenseTotal = document.getElementById('expenseTotal');
 const balanceTotal = document.getElementById('total');
@@ -165,3 +187,19 @@ const showBalance = () => {
     balanceTotal.appendChild(pTotal);
 }
 showBalance();
+
+// HIDE FILTERS
+const filtersForm = document.getElementById("filtersForm");
+const hideFilters = document.getElementById("hideFilters");
+const showFilters = document.getElementById("showFilters");
+
+hideFilters.addEventListener("click", ()=>{
+    filtersForm.classList.add('d-none');
+    hideFilters.classList.add('d-none');
+    showFilters.classList.remove('d-none');
+});
+showFilters.addEventListener("click", ()=>{
+    filtersForm.classList.remove('d-none');
+    hideFilters.classList.remove('d-none');
+    showFilters.classList.add('d-none');
+});

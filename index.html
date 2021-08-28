@@ -10,10 +10,10 @@
     <link rel="stylesheet" href="./assets/Styles/css/override.css">
     <script src="https://kit.fontawesome.com/5a448a2b79.js" crossorigin="anonymous"></script>
 </head>
-<body class="backgroundColor">
-    <nav class="navbar navbar-expand-lg navbar-light bg-secondary p-4">
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light p-4">
 	    <div class="container-fluid">
-		    <div class="navbar-brand h1 text-white">
+		    <div class="navbar-brand text-white">
 			    <i class="fas fa-wallet"></i>
 			    PiggyBank
             </div>
@@ -48,15 +48,16 @@
         <div class="row justify-content-center mt-5 d-flex flex-column-lg">
             <aside class="col-12 col-lg-4 d-flex flex-column">
 				<div class="balance d-flex flex-column justify-content-between p-3 balanceCards">
-					<h1>Balance</h1>
+					<h1><b>Balance</b></h1>
 					<div class="d-flex justify-content-between pe-3" id="incomeTotal"><p>Incomes</p></div>
 					<div class="d-flex justify-content-between pe-3" id="expenseTotal"><p>Expenses</p></div>
 					<div class="d-flex justify-content-between pe-3" id="total"><p>Total</p></div>
 				</div>
 				<div class="filters p-3 balanceCards mt-4 mb-4">
-					<h1>Filtros</h1>
-					<p>ocultar filtros</p>
-					<form action="">
+					<h1><b>Filters</b></h1>
+					<button class="btn-action" id="hideFilters">Hide filters</button>
+					<button class="btn-action d-none" id="showFilters">Show filters</button>
+					<form id="filtersForm">
 						<label for="selType" class="form-label mt-3">Type</label>
 						<select class="form-select" id="selType" aria-describedby="type" name="type">
 							<option value="All">All</option>
@@ -83,12 +84,13 @@
             </aside>
             <main class="col-12 col-lg-8 p-3 balanceCards">
                 <div class="d-flex justify-content-between">
-                    <h1>Operations</h1>
-					<button  class="btn-primary btn">
-						<a href="./operations.html" class="btn">+ New Operation</a>
+                    <h1><b>Operations</b></h1>
+					<button onclick="location.href= './operations.html'" class="btn-primary btn">
+						+ New Operation
 					</button>
                 </div>
-                <table class="table table-borderless">
+				<img id="mainImage" src="./piggyImage.jpeg" alt="piggyImage" width="100%">
+                <table id="operationsTable" class="table table-borderless mt-4">
                     <thead>
                         <tr>
                             <th scope="col">Description</th>
@@ -98,7 +100,7 @@
                             <th scope="col">Actions</th>
                         </tr>
                     </thead>
-					<tbody id="operationsTable">
+					<tbody id="operationsTableBody">
 					</tbody>
 				</table>
 			</main>

@@ -10,11 +10,13 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 var operationsTable = document.getElementById("operationsTable");
+var operationsTableBody = document.getElementById("operationsTableBody");
 var selectorType = document.getElementById("selType");
 var selectorCategory = document.getElementById("selCategory");
 var inputDate = document.getElementById("inpDate");
 var selectorOrderBy = document.getElementById("selOrderBy");
 var selOrderBy = document.getElementById("selOrderBy");
+var mainImage = document.getElementById("mainImage");
 inputDate.valueAsDate = new Date();
 var deleteOperation = function (e) {
     var idOperation = e.target.dataset.id;
@@ -41,8 +43,10 @@ var createRowTable = function (operation) {
     var tdActions = document.createElement('td');
     var btnEdit = document.createElement('button');
     btnEdit.setAttribute('onclick', "location.href=\"./operations-edit.html?id=" + operation.id + "\"");
+    btnEdit.classList.add('btn-action');
     var btnDelete = document.createElement('button');
     btnDelete.dataset.id = "" + operation.id;
+    btnDelete.classList.add('btn-action');
     var textDescription = document.createTextNode(operation.description);
     var textCategory = document.createTextNode(operation.category);
     var textDate = document.createTextNode(operation.date);
@@ -70,7 +74,7 @@ var createRowTable = function (operation) {
     tr.appendChild(tdDate);
     tr.appendChild(tdAmount);
     tr.appendChild(tdActions);
-    operationsTable.appendChild(tr);
+    operationsTableBody.appendChild(tr);
     btnDelete.addEventListener('click', deleteOperation);
 };
 var orderList = function (operations) {
@@ -103,23 +107,43 @@ var filterOperations = function () {
     var operationsByType = operationsAll.filter(function (item) { return selectorTypeValue == "All" || item.type == selectorTypeValue; });
     var operationsByCategory = operationsByType.filter(function (item) { return selectorCategoryValue == "All" || item.category == selectorCategoryValue; });
     var operationsByDate = operationsByCategory.filter(function (item) { return selectorDateValue <= (new Date(item.date)); });
-    orderList(operationsByDate);
-    operationsTable.innerHTML = "";
-    for (var _i = 0, operationsByDate_1 = operationsByDate; _i < operationsByDate_1.length; _i++) {
-        var operation = operationsByDate_1[_i];
-        createRowTable(operation);
+    if (operationsByDate.length === 0) {
+        operationsTable.classList.add('d-none');
+        mainImage.classList.remove('d-none');
+    }
+    else {
+        operationsTable.classList.remove('d-none');
+        mainImage.classList.add('d-none');
+        operationsTableBody.innerHTML = "";
+        orderList(operationsByDate);
+        for (var _i = 0, operationsByDate_1 = operationsByDate; _i < operationsByDate_1.length; _i++) {
+            var operation = operationsByDate_1[_i];
+            createRowTable(operation);
+        }
     }
 };
-var loadOperations = function () {
+var loadOperationsBeginning = function () {
     var storage = getLocalStorage();
     var operationsAll = storage.operations;
     //Filter by date from today to start
-    var operationsfromToday = operationsAll.filter(function (item) { return new Date() <= (new Date(item.date)); });
-    orderList(operationsfromToday);
-    for (var _i = 0, operationsfromToday_1 = operationsfromToday; _i < operationsfromToday_1.length; _i++) {
-        var operation = operationsfromToday_1[_i];
-        createRowTable(operation);
+    var operationsFromToday = operationsAll.filter(function (item) { return new Date() <= (new Date(item.date)); });
+    if (operationsFromToday.length === 0) {
+        operationsTable.classList.add('d-none');
+        mainImage.classList.remove('d-none');
     }
+    else {
+        operationsTable.classList.remove('d-none');
+        mainImage.classList.add('d-none');
+        operationsTableBody.innerHTML = "";
+        orderList(operationsFromToday);
+        for (var _i = 0, operationsFromToday_1 = operationsFromToday; _i < operationsFromToday_1.length; _i++) {
+            var operation = operationsFromToday_1[_i];
+            createRowTable(operation);
+        }
+    }
+};
+var loadOperations = function () {
+    filterOperations();
     //Filter Type
     selectorType.addEventListener('change', filterOperations);
     //Filter Category
@@ -131,6 +155,8 @@ var loadOperations = function () {
 };
 deleteOperationsWOCategory();
 loadOperations();
+loadOperationsBeginning();
+// BALANCE
 var incomeTotal = document.getElementById('incomeTotal');
 var expenseTotal = document.getElementById('expenseTotal');
 var balanceTotal = document.getElementById('total');
@@ -163,3 +189,17 @@ var showBalance = function () {
     balanceTotal.appendChild(pTotal);
 };
 showBalance();
+// HIDE FILTERS
+var filtersForm = document.getElementById("filtersForm");
+var hideFilters = document.getElementById("hideFilters");
+var showFilters = document.getElementById("showFilters");
+hideFilters.addEventListener("click", function () {
+    filtersForm.classList.add('d-none');
+    hideFilters.classList.add('d-none');
+    showFilters.classList.remove('d-none');
+});
+showFilters.addEventListener("click", function () {
+    filtersForm.classList.remove('d-none');
+    hideFilters.classList.remove('d-none');
+    showFilters.classList.add('d-none');
+});
