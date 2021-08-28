@@ -117,7 +117,7 @@ const createTotalsTable = (category, earnings, spendings, balance, domTable) =>{
     domTable.appendChild(tr);
 }
 
-const reportsTotalByCategory = () =>{
+const reportsTotalsByCategory = () =>{
     let storage: LocalStorage = getLocalStorage();
 
     storage.categories.forEach(element=>{
@@ -132,13 +132,13 @@ const reportsTotalByCategory = () =>{
                 totalExp += (Number(element.amount);
             }
         });
-        let balance = getBalance(byCategory)
+        let balance = getBalance(byCategory);
         createTotalsTable(element.name, totalInc, totalExp, balance, totalsByCategoryTable);
     }
 };
 
 
-// TOTALS BY MONTH
+// RESUME AND TOTALS BY MONTH
 const getTotalsByDate = () => {
     let storage: LocalStorage = getLocalStorage();  
     let totalsOperations = {};
@@ -158,12 +158,48 @@ const getTotalsByDate = () => {
     return totalsOperations;
 };
 
-const getReportsByDate = () => {
+const reportsResumeByMonth =()=>{
     const totalsOperations = getTotalsByDate();
-//   let highestEarning = 0;
-//   let highestSpending = 0;
-//   let highestEarningMonth;
-//   let highestSpendingMonth;
+    let highestSpending = 0;
+    let highestEarning = 0;
+    let highestEarningDate;
+    let highestSpendingDate;
+    let lastHighestEarning = 0;
+    let lastHighestSpending = 0;
+    let lastHighestEarningDate;
+    let lastHighestSpendingDate;
+
+    for(let year in totalsOperations){
+        let operationsByYear = totalsOperations[year];
+        for(let month in operationsByYear){
+            highestSpending = 0;
+            highestEarning = 0;
+            operationsByYear[month].forEach(amount => {
+                if(amount < 0){
+                    highestSpending += Number(amount);
+                    highestSpendingDate = `${month}/${year}`;
+                }else{
+                    highestEarning += Number(amount);
+                    highestEarningDate = `${month}/${year}`;
+                }
+            });
+            if(highestSpending < lastHighestSpending){
+                lastHighestSpending = highestSpending;
+                lastHighestSpendingDate = highestSpendingDate;
+            }
+            if(highestEarning > lastHighestEarning){
+                lastHighestEarning = highestEarning;
+                lastHighestEarningDate = highestEarningDate;
+            }
+        }
+    }
+    createResumeTable(`Highest earning month`, lastHighestEarningDate, lastHighestEarning);
+    createResumeTable(`Highest spending month`, lastHighestSpendingDate, lastHighestSpending);
+}
+
+const reportsTotalsByDate = () => {
+    const totalsOperations = getTotalsByDate();
+
     for (let year in totalsOperations){
         let totalExp = 0;
         let totalInc = 0;
@@ -176,30 +212,20 @@ const getReportsByDate = () => {
                     totalInc += Number(element);
                 }
             });
-            
-    //        if(highestEarning < totalInc){
-    //            highestEarning = totalInc;
-    //            highestEarningMonth = month;
-    //        }
-    //        if(highestSpending < totalExp){
-    //            highestSpending = totalExp;
-    //            highestSpendingMonth = month;
-    //        }
-    //    console.log(`highestEarning ${highestEarning}, highestSpending${highestSpending}, earningMonth ${highestEarningMonth}, spendingMonth ${highestSpendingMonth}`);
-        balance = totalExp + totalInc;
-        const date = `${month}/${year}`
-        createTotalsTable(date, totalInc, totalExp, balance, totalsByMonthTable);
+            balance = totalExp + totalInc;
+            const date = `${month}/${year}`
+            createTotalsTable(date, totalInc, totalExp, balance, totalsByMonthTable);
         };
     }
 };
 
-
-
 let storage: LocalStorage = getLocalStorage();
+
 if(storage.operations.length > 3){
     reportsResumeByCategory();
-    reportsTotalByCategory();
-    getReportsByDate();
+    reportsResumeByMonth();
+    reportsTotalsByCategory();
+    reportsTotalsByDate();
 }else{
     console.log(storage.operations.length)
     alert('Not enough operations');

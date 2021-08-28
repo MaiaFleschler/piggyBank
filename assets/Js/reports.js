@@ -108,7 +108,7 @@ var createTotalsTable = function (category, earnings, spendings, balance, domTab
     tr.appendChild(tdBalance);
     domTable.appendChild(tr);
 };
-var reportsTotalByCategory = function () {
+var reportsTotalsByCategory = function () {
     var storage = getLocalStorage();
     storage.categories.forEach(function (element) {
         var byCategory = storage.operations.filter(function (item) { return item.category === element.name; });
@@ -126,7 +126,7 @@ var reportsTotalByCategory = function () {
         createTotalsTable(element.name, totalInc, totalExp, balance, totalsByCategoryTable);
     });
 };
-// TOTALS BY MONTH
+// RESUME AND TOTALS BY MONTH
 var getTotalsByDate = function () {
     var storage = getLocalStorage();
     var totalsOperations = {};
@@ -143,9 +143,53 @@ var getTotalsByDate = function () {
     });
     return totalsOperations;
 };
-var getReportsByDate = function () {
+var reportsResumeByMonth = function () {
     var totalsOperations = getTotalsByDate();
+    var highestSpending = 0;
+    var highestEarning = 0;
+    var highestEarningDate;
+    var highestSpendingDate;
+    var lastHighestEarning = 0;
+    var lastHighestSpending = 0;
+    var lastHighestEarningDate;
+    var lastHighestSpendingDate;
     var _loop_1 = function (year) {
+        var operationsByYear = totalsOperations[year];
+        var _loop_2 = function (month) {
+            highestSpending = 0;
+            highestEarning = 0;
+            operationsByYear[month].forEach(function (amount) {
+                if (amount < 0) {
+                    highestSpending += Number(amount);
+                    highestSpendingDate = month + "/" + year;
+                }
+                else {
+                    highestEarning += Number(amount);
+                    highestEarningDate = month + "/" + year;
+                }
+            });
+            if (highestSpending < lastHighestSpending) {
+                lastHighestSpending = highestSpending;
+                lastHighestSpendingDate = highestSpendingDate;
+            }
+            if (highestEarning > lastHighestEarning) {
+                lastHighestEarning = highestEarning;
+                lastHighestEarningDate = highestEarningDate;
+            }
+        };
+        for (var month in operationsByYear) {
+            _loop_2(month);
+        }
+    };
+    for (var year in totalsOperations) {
+        _loop_1(year);
+    }
+    createResumeTable("Highest earning month", lastHighestEarningDate, lastHighestEarning);
+    createResumeTable("Highest spending month", lastHighestSpendingDate, lastHighestSpending);
+};
+var reportsTotalsByDate = function () {
+    var totalsOperations = getTotalsByDate();
+    var _loop_3 = function (year) {
         var totalExp = 0;
         var totalInc = 0;
         var balance = 0;
@@ -158,34 +202,22 @@ var getReportsByDate = function () {
                     totalInc += Number(element);
                 }
             });
-            //        if(highestEarning < totalInc){
-            //            highestEarning = totalInc;
-            //            highestEarningMonth = month;
-            //        }
-            //        if(highestSpending < totalExp){
-            //            highestSpending = totalExp;
-            //            highestSpendingMonth = month;
-            //        }
-            //    console.log(`highestEarning ${highestEarning}, highestSpending${highestSpending}, earningMonth ${highestEarningMonth}, spendingMonth ${highestSpendingMonth}`);
             balance = totalExp + totalInc;
             var date = month + "/" + year;
             createTotalsTable(date, totalInc, totalExp, balance, totalsByMonthTable);
         }
         ;
     };
-    //   let highestEarning = 0;
-    //   let highestSpending = 0;
-    //   let highestEarningMonth;
-    //   let highestSpendingMonth;
     for (var year in totalsOperations) {
-        _loop_1(year);
+        _loop_3(year);
     }
 };
 var storage = getLocalStorage();
 if (storage.operations.length > 3) {
     reportsResumeByCategory();
-    reportsTotalByCategory();
-    getReportsByDate();
+    reportsResumeByMonth();
+    reportsTotalsByCategory();
+    reportsTotalsByDate();
 }
 else {
     console.log(storage.operations.length);
