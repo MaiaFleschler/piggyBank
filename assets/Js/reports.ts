@@ -87,36 +87,37 @@ const reportsResumeByCategory = () => {
         }
     })
 
-    createResumeTable("Highest earning category", higherIncomeCategory, higherIncome);
-    createResumeTable("Highest spending category", higherExpenseCategory, (Number(higherExpense))*-1);
+    createResumeTable("Highest income category", higherIncomeCategory, higherIncome);
+    createResumeTable("Highest expense category", higherExpenseCategory, (Number(higherExpense))*-1);
     createResumeTable("Highest balance category", higherBalanceCategory, higherBalance);
 }
 
-// TOTAL BY CATEGORY
-const createTotalsTable = (category, earnings, spendings, balance, domTable) =>{
+// TOTALS TABLE CREATION
+const createTotalsTable = (principalCol, incomes, expenses, balance, domTable) =>{
     const tr = document.createElement('tr');
     const tdCategory = document.createElement('td');
-    const tdEarnings = document.createElement('td');
-    const tdSpendings = document.createElement('td');
+    const tdIncomes = document.createElement('td');
+    const tdExpenses = document.createElement('td');
     const tdBalance = document.createElement('td');
-    const textCategory = document.createTextNode(category);
-    const textEarnings = document.createTextNode(`+ $${earnings}`); 
-    const textSpendings = document.createTextNode(`- $${spendings}`); 
+    const textCategory = document.createTextNode(principalCol);
+    const textIncomes = document.createTextNode(`+ $${incomes}`); 
+    const textExpenses = document.createTextNode(`- $${expenses}`); 
     const textBalance = document.createTextNode(`$${balance}`); 
     tdCategory.appendChild(textCategory);
-    tdEarnings.appendChild(textEarnings);
-    tdSpendings.appendChild(textSpendings);
+    tdIncomes.appendChild(textIncomes);
+    tdExpenses.appendChild(textExpenses);
     tdBalance.appendChild(textBalance);
-    tdEarnings.style.color = "green"; 
-    tdSpendings.style.color = "red";
+    tdIncomes.style.color = "green"; 
+    tdExpenses.style.color = "red";
     tr.appendChild(tdCategory);
-    tr.appendChild(tdEarnings);
-    tr.appendChild(tdSpendings);
+    tr.appendChild(tdIncomes);
+    tr.appendChild(tdExpenses);
     tr.appendChild(tdBalance);
         
     domTable.appendChild(tr);
 }
 
+//TOTALS BY CATEGORY
 const reportsTotalsByCategory = () =>{
     let storage: LocalStorage = getLocalStorage();
 
@@ -160,41 +161,41 @@ const getTotalsByDate = () => {
 
 const reportsResumeByMonth =()=>{
     const totalsOperations = getTotalsByDate();
-    let highestSpending = 0;
-    let highestEarning = 0;
-    let highestEarningDate;
-    let highestSpendingDate;
-    let lastHighestEarning = 0;
-    let lastHighestSpending = 0;
-    let lastHighestEarningDate;
-    let lastHighestSpendingDate;
+    let highestExpense = 0;
+    let highestIncome = 0;
+    let highestIncomeDate;
+    let highestExpenseDate;
+    let lastHighestIncome = 0;
+    let lastHighestExpense = 0;
+    let lastHighestIncomeDate;
+    let lastHighestExpenseDate;
 
     for(let year in totalsOperations){
         let operationsByYear = totalsOperations[year];
         for(let month in operationsByYear){
-            highestSpending = 0;
-            highestEarning = 0;
+            highestExpense = 0;
+            highestIncome= 0;
             operationsByYear[month].forEach(amount => {
                 if(amount < 0){
-                    highestSpending += Number(amount);
-                    highestSpendingDate = `${month}/${year}`;
+                    highestExpense += Number(amount);
+                    highestExpenseDate = `${month}/${year}`;
                 }else{
-                    highestEarning += Number(amount);
-                    highestEarningDate = `${month}/${year}`;
+                    highestIncome += Number(amount);
+                    highestIncomeDate = `${month}/${year}`;
                 }
             });
-            if(highestSpending < lastHighestSpending){
-                lastHighestSpending = highestSpending;
-                lastHighestSpendingDate = highestSpendingDate;
+            if(highestExpense < lastHighestExpense){
+                lastHighestExpense = highestExpense;
+                lastHighestExpenseDate = highestExpenseDate;
             }
-            if(highestEarning > lastHighestEarning){
-                lastHighestEarning = highestEarning;
-                lastHighestEarningDate = highestEarningDate;
+            if(highestIncome > lastHighestIncome){
+                lastHighestIncome = highestIncome;
+                lastHighestIncomeDate = highestIncomeDate;
             }
         }
     }
-    createResumeTable(`Highest earning month`, lastHighestEarningDate, lastHighestEarning);
-    createResumeTable(`Highest spending month`, lastHighestSpendingDate, lastHighestSpending);
+    createResumeTable(`Highest income month`, lastHighestIncomeDate, lastHighestIncome);
+    createResumeTable(`Highest expense month`, lastHighestExpenseDate, lastHighestExpense   );
 }
 
 const reportsTotalsByDate = () => {

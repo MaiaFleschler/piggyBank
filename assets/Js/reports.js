@@ -81,33 +81,34 @@ var reportsResumeByCategory = function () {
             higherExpenseCategory = element.name;
         }
     });
-    createResumeTable("Highest earning category", higherIncomeCategory, higherIncome);
-    createResumeTable("Highest spending category", higherExpenseCategory, (Number(higherExpense)) * -1);
+    createResumeTable("Highest income category", higherIncomeCategory, higherIncome);
+    createResumeTable("Highest expense category", higherExpenseCategory, (Number(higherExpense)) * -1);
     createResumeTable("Highest balance category", higherBalanceCategory, higherBalance);
 };
-// TOTAL BY CATEGORY
-var createTotalsTable = function (category, earnings, spendings, balance, domTable) {
+// TOTALS TABLE CREATION
+var createTotalsTable = function (principalCol, incomes, expenses, balance, domTable) {
     var tr = document.createElement('tr');
     var tdCategory = document.createElement('td');
-    var tdEarnings = document.createElement('td');
-    var tdSpendings = document.createElement('td');
+    var tdIncomes = document.createElement('td');
+    var tdExpenses = document.createElement('td');
     var tdBalance = document.createElement('td');
-    var textCategory = document.createTextNode(category);
-    var textEarnings = document.createTextNode("+ $" + earnings);
-    var textSpendings = document.createTextNode("- $" + spendings);
+    var textCategory = document.createTextNode(principalCol);
+    var textIncomes = document.createTextNode("+ $" + incomes);
+    var textExpenses = document.createTextNode("- $" + expenses);
     var textBalance = document.createTextNode("$" + balance);
     tdCategory.appendChild(textCategory);
-    tdEarnings.appendChild(textEarnings);
-    tdSpendings.appendChild(textSpendings);
+    tdIncomes.appendChild(textIncomes);
+    tdExpenses.appendChild(textExpenses);
     tdBalance.appendChild(textBalance);
-    tdEarnings.style.color = "green";
-    tdSpendings.style.color = "red";
+    tdIncomes.style.color = "green";
+    tdExpenses.style.color = "red";
     tr.appendChild(tdCategory);
-    tr.appendChild(tdEarnings);
-    tr.appendChild(tdSpendings);
+    tr.appendChild(tdIncomes);
+    tr.appendChild(tdExpenses);
     tr.appendChild(tdBalance);
     domTable.appendChild(tr);
 };
+//TOTALS BY CATEGORY
 var reportsTotalsByCategory = function () {
     var storage = getLocalStorage();
     storage.categories.forEach(function (element) {
@@ -145,36 +146,36 @@ var getTotalsByDate = function () {
 };
 var reportsResumeByMonth = function () {
     var totalsOperations = getTotalsByDate();
-    var highestSpending = 0;
-    var highestEarning = 0;
-    var highestEarningDate;
-    var highestSpendingDate;
-    var lastHighestEarning = 0;
-    var lastHighestSpending = 0;
-    var lastHighestEarningDate;
-    var lastHighestSpendingDate;
+    var highestExpense = 0;
+    var highestIncome = 0;
+    var highestIncomeDate;
+    var highestExpenseDate;
+    var lastHighestIncome = 0;
+    var lastHighestExpense = 0;
+    var lastHighestIncomeDate;
+    var lastHighestExpenseDate;
     var _loop_1 = function (year) {
         var operationsByYear = totalsOperations[year];
         var _loop_2 = function (month) {
-            highestSpending = 0;
-            highestEarning = 0;
+            highestExpense = 0;
+            highestIncome = 0;
             operationsByYear[month].forEach(function (amount) {
                 if (amount < 0) {
-                    highestSpending += Number(amount);
-                    highestSpendingDate = month + "/" + year;
+                    highestExpense += Number(amount);
+                    highestExpenseDate = month + "/" + year;
                 }
                 else {
-                    highestEarning += Number(amount);
-                    highestEarningDate = month + "/" + year;
+                    highestIncome += Number(amount);
+                    highestIncomeDate = month + "/" + year;
                 }
             });
-            if (highestSpending < lastHighestSpending) {
-                lastHighestSpending = highestSpending;
-                lastHighestSpendingDate = highestSpendingDate;
+            if (highestExpense < lastHighestExpense) {
+                lastHighestExpense = highestExpense;
+                lastHighestExpenseDate = highestExpenseDate;
             }
-            if (highestEarning > lastHighestEarning) {
-                lastHighestEarning = highestEarning;
-                lastHighestEarningDate = highestEarningDate;
+            if (highestIncome > lastHighestIncome) {
+                lastHighestIncome = highestIncome;
+                lastHighestIncomeDate = highestIncomeDate;
             }
         };
         for (var month in operationsByYear) {
@@ -184,8 +185,8 @@ var reportsResumeByMonth = function () {
     for (var year in totalsOperations) {
         _loop_1(year);
     }
-    createResumeTable("Highest earning month", lastHighestEarningDate, lastHighestEarning);
-    createResumeTable("Highest spending month", lastHighestSpendingDate, lastHighestSpending);
+    createResumeTable("Highest income month", lastHighestIncomeDate, lastHighestIncome);
+    createResumeTable("Highest expense month", lastHighestExpenseDate, lastHighestExpense);
 };
 var reportsTotalsByDate = function () {
     var totalsOperations = getTotalsByDate();
