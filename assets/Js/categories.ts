@@ -19,9 +19,11 @@ const loadCategories = () => {
         const tdEdit = document.createElement('td');
         const tdDelete = document.createElement('td');
         const btnEdit = document.createElement('button');
+        btnEdit.classList.add('btn-action');
         btnEdit.setAttribute('onclick', `location.href="./categories-edit.html?id=${category.id}"`);
         const btnDelete = document.createElement('button');
         btnDelete.dataset.id = `${category.id}`;
+        btnDelete.classList.add('btn-action');
         const textName = document.createTextNode(category.name) 
         const textEdit = document.createTextNode('Edit');
         const textDelete = document.createTextNode('Delete');

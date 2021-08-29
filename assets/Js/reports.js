@@ -9,14 +9,24 @@ var createResumeTable = function (description, character, amount) {
     var tdCharacter = document.createElement('td');
     var tdAmount = document.createElement('td');
     var textDescription = document.createTextNode(description);
-    var textCharacter = document.createTextNode(character);
+    var textCharacter;
+    if (character) {
+        textCharacter = document.createTextNode(character);
+    }
+    else {
+        textCharacter = document.createTextNode("-");
+    }
     if (amount < 0) {
-        var textAmount = document.createTextNode("" + amount);
+        var textAmount = document.createTextNode("-$" + (Number(amount)) * -1);
         tdAmount.appendChild(textAmount);
         tdAmount.style.color = "red";
     }
+    else if (amount === 0) {
+        var textAmount = document.createTextNode("-");
+        tdAmount.appendChild(textAmount);
+    }
     else {
-        var textAmount = document.createTextNode("" + amount);
+        var textAmount = document.createTextNode("+ $" + amount);
         tdAmount.appendChild(textAmount);
         tdAmount.style.color = "green";
     }
@@ -43,8 +53,8 @@ var getBalance = function (array) {
 var getHigherIncome = function (array) {
     var higherIncome = 0;
     array.forEach(function (element) {
-        if (element.type == "Income" && element.amount >= higherIncome) {
-            higherIncome = Number(element.amount);
+        if (element.type == "Income") {
+            higherIncome += Number(element.amount);
         }
     });
     return higherIncome;
@@ -52,8 +62,8 @@ var getHigherIncome = function (array) {
 var getHigherExpense = function (array) {
     var higherExpense = 0;
     array.forEach(function (element) {
-        if (element.type == "Expense" && element.amount > higherExpense) {
-            higherExpense = Number(element.amount);
+        if (element.type == "Expense") {
+            higherExpense += Number(element.amount);
         }
     });
     return higherExpense;
@@ -188,7 +198,7 @@ var reportsResumeByMonth = function () {
     createResumeTable("Highest income month", lastHighestIncomeDate, lastHighestIncome);
     createResumeTable("Highest expense month", lastHighestExpenseDate, lastHighestExpense);
 };
-var reportsTotalsByDate = function () {
+var reportsTotalsByMonth = function () {
     var totalsOperations = getTotalsByDate();
     var _loop_3 = function (year) {
         var totalExp = 0;
@@ -205,7 +215,7 @@ var reportsTotalsByDate = function () {
             });
             balance = totalExp + totalInc;
             var date = month + "/" + year;
-            createTotalsTable(date, totalInc, totalExp, balance, totalsByMonthTable);
+            createTotalsTable(date, totalInc, (Number(totalExp)) * -1, balance, totalsByMonthTable);
         }
         ;
     };
@@ -214,13 +224,16 @@ var reportsTotalsByDate = function () {
     }
 };
 var storage = getLocalStorage();
-if (storage.operations.length > 3) {
+//CHECK OPERATIONS TO REPORTS START
+var reportsImage = document.getElementById("reportsImage");
+var reportsTables = document.getElementById("reportsTables");
+if (storage.operations.length >= 3) {
+    reportsImage.classList.add("d-none");
     reportsResumeByCategory();
     reportsResumeByMonth();
     reportsTotalsByCategory();
-    reportsTotalsByDate();
+    reportsTotalsByMonth();
 }
 else {
-    console.log(storage.operations.length);
-    alert('Not enough operations');
+    reportsTables.classList.add("d-none");
 }

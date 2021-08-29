@@ -46,11 +46,11 @@ const createRowTable = (operation) => {
     const textCategory = document.createTextNode(operation.category); 
     const textDate = document.createTextNode(operation.date); 
     if(operation.type === "Expense"){
-        const textAmount = document.createTextNode(`${(operation.amount)*-1}`);
+        const textAmount = document.createTextNode(`-$${operation.amount}`);
         tdAmount.appendChild(textAmount);
         tdAmount.style.color = "red";
     } else {
-        const textAmount = document.createTextNode(`${operation.amount}`);
+        const textAmount = document.createTextNode(`+$${operation.amount}`);
         tdAmount.appendChild(textAmount);
         tdAmount.style.color = "green";
     }
@@ -176,9 +176,16 @@ const showBalance = () => {
     const pExpense = document.createElement('p');
     pExpense.style.color = "red";
     const pTotal = document.createElement('p');
-    const textIncome = document.createTextNode(`${totalInc}`);
-    const textExpense = document.createTextNode(`${totalExp}`);
-    const textTotal = document.createTextNode(`${total}`);
+    const textIncome = document.createTextNode(`+$${totalInc}`);
+    const textExpense = document.createTextNode(`-$${(Number(totalExp))*-1}`);
+    let textTotal;
+    if(total){
+        textTotal = document.createTextNode(`+$${total}`);
+        pTotal.style.color = "green";
+    }else{
+        textTotal = document.createTextNode(`-$${total}`);
+        pTotal.style.color = "red";
+    }
     pIncome.appendChild(textIncome);
     pExpense.appendChild(textExpense);
     pTotal.appendChild(textTotal);

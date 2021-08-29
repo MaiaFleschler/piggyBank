@@ -51,12 +51,12 @@ var createRowTable = function (operation) {
     var textCategory = document.createTextNode(operation.category);
     var textDate = document.createTextNode(operation.date);
     if (operation.type === "Expense") {
-        var textAmount = document.createTextNode("" + (operation.amount) * -1);
+        var textAmount = document.createTextNode("-$" + operation.amount);
         tdAmount.appendChild(textAmount);
         tdAmount.style.color = "red";
     }
     else {
-        var textAmount = document.createTextNode("" + operation.amount);
+        var textAmount = document.createTextNode("+$" + operation.amount);
         tdAmount.appendChild(textAmount);
         tdAmount.style.color = "green";
     }
@@ -178,9 +178,17 @@ var showBalance = function () {
     var pExpense = document.createElement('p');
     pExpense.style.color = "red";
     var pTotal = document.createElement('p');
-    var textIncome = document.createTextNode("" + totalInc);
-    var textExpense = document.createTextNode("" + totalExp);
-    var textTotal = document.createTextNode("" + total);
+    var textIncome = document.createTextNode("+$" + totalInc);
+    var textExpense = document.createTextNode("-$" + (Number(totalExp)) * -1);
+    var textTotal;
+    if (total) {
+        textTotal = document.createTextNode("+$" + total);
+        pTotal.style.color = "green";
+    }
+    else {
+        textTotal = document.createTextNode("-$" + total);
+        pTotal.style.color = "red";
+    }
     pIncome.appendChild(textIncome);
     pExpense.appendChild(textExpense);
     pTotal.appendChild(textTotal);

@@ -11,7 +11,7 @@
     <script src="https://kit.fontawesome.com/5a448a2b79.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light p-4">
+    <nav class="navbar navbar-expand-lg navbar-light p-3">
 	    <div class="container-fluid">
 		    <div class="navbar-brand text-white">
 			    <i class="fas fa-wallet"></i>
@@ -46,16 +46,16 @@
 	</nav>
 	<div class="container backgroundColor">
         <div class="row justify-content-center mt-5 d-flex flex-column-lg">
-            <aside class="col-12 col-lg-4 d-flex flex-column">
-				<div class="balance d-flex flex-column justify-content-between p-3 balanceCards">
-					<h1><b>Balance</b></h1>
+            <aside class="col-lg-4">
+				<div class="d-flex flex-column justify-content-between p-4 balanceCards">
+					<h2 class="mb-4"><b>Balance</b></h2>
 					<div class="d-flex justify-content-between pe-3" id="incomeTotal"><p>Incomes</p></div>
 					<div class="d-flex justify-content-between pe-3" id="expenseTotal"><p>Expenses</p></div>
 					<div class="d-flex justify-content-between pe-3" id="total"><p>Total</p></div>
 				</div>
-				<div class="filters p-3 balanceCards mt-4 mb-4">
-					<h1><b>Filters</b></h1>
-					<button class="btn-action" id="hideFilters">Hide filters</button>
+				<div class="p-4 balanceCards mt-4 mb-4">
+					<h2><b>Filters</b></h2>
+					<button class="btn-action mb-4" id="hideFilters">Hide filters</button>
 					<button class="btn-action d-none" id="showFilters">Show filters</button>
 					<form id="filtersForm">
 						<label for="selType" class="form-label mt-3">Type</label>
@@ -82,14 +82,19 @@
 					</form>
 				</div>
             </aside>
-            <main class="col-12 col-lg-8 p-3 balanceCards">
-                <div class="d-flex justify-content-between">
-                    <h1><b>Operations</b></h1>
+            <main class="col-lg-8">
+				<div class="d-flex flex-column justify-content-between p-4 balanceCards">
+                <div class="d-flex justify-content-between mb-4">
+                    <h2><b>Operations</b></h2>
 					<button onclick="location.href= './operations.html'" class="btn-primary btn">
 						+ New Operation
 					</button>
                 </div>
-				<img id="mainImage" src="./piggyImage.jpeg" alt="piggyImage" width="100%">
+				<div class="text-center" id="mainImage">
+					<img src="./piggyImage.jpeg" alt="piggyImage" width="80%">
+					<h4 class="table">Without results</h4>
+					<p>Change filters or add operations</p>
+				</div>
                 <table id="operationsTable" class="table table-borderless mt-4">
                     <thead>
                         <tr>
@@ -103,6 +108,7 @@
 					<tbody id="operationsTableBody">
 					</tbody>
 				</table>
+			</div>
 			</main>
 		</div>
 	</div>

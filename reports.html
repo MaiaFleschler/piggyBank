@@ -11,7 +11,7 @@
     <script src="https://kit.fontawesome.com/5a448a2b79.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light p-4">
+    <nav class="navbar navbar-expand-lg navbar-light p-3">
 	    <div class="container-fluid">
 		    <div class="navbar-brand h1 text-white">
 			    <i class="fas fa-wallet"></i>
@@ -47,14 +47,19 @@
     <main class="container">
         <div class="p-4 balanceCards mt-5 mb-4 col-12 col-lg-8 mx-auto">
             <h1><b>Reports</b></h1>
-            <div class="container p-4">
+            <div class="text-center" id="reportsImage">
+                <img src="./piggyImage.jpeg" alt="piggyImage" width="80%">
+                <h4 class="table">Not enough operations</h4>
+                <p>Try adding more operations</p>
+            </div>
+            <div id="reportsTables" class="container p-4">
                 <table class="table table-borderless mt-4">
-                    <h3 class="mt-5 mb-3 secondary-title">Resume</h3>
+                    <h4 class="mt-5 mb-3 secondary-title">Resume</h4>
                     <thead></thead>
                     <tbody id="resumeTable"></tbody>
                 </table>
                 <table class="table table-borderless mt-4">
-                    <h3 class="mt-5 mb-3 secondary-title">Totals by category</h3>
+                    <h4 class="mt-5 mb-3 secondary-title">Totals by category</h4>
                     <thead>
                         <tr>
                             <th scope="col">Category</th>
@@ -66,7 +71,7 @@
                     <tbody id="totalsByCategoryTable"></tbody>
                 </table>
                 <table class="table table-borderless mt-4">
-                    <h3 class="mt-5 mb-3 secondary-title">Totals by month</h3>
+                    <h4 class="mt-5 mb-3 secondary-title">Totals by month</h4>
                     <thead>
                         <tr>
                             <th scope="col">Month</th>

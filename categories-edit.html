@@ -11,7 +11,7 @@
 	<script src="https://kit.fontawesome.com/5a448a2b79.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light p-4">
+    <nav class="navbar navbar-expand-lg navbar-light p-3">
 	    <div class="container-fluid">
 		    <div class="navbar-brand h1 text-white">
 			    <i class="fas fa-wallet"></i>
@@ -50,8 +50,10 @@
             <form id="formEditCategory" action="./categories.html">
                 <label for="inpName" class="form-label mt-3">Name</label>
                 <input type="text" class="form-control" id="inpName" aria-describedby="name" name="name" required>
-                <a class="btn-primary btn mt-4" href="./categories.html">Cancel</a>
-                <input type="submit" class="btn-primary btn mt-4" value="Save">
+				<div class="d-flex justify-content-end">
+					<button class="btn-secondary btn mt-4 m-1" onclick="location.href='./categories.html'">Cancel</button>
+                	<input type="submit" class="btn-primary btn mt-4 m-1 px-4" value="Save">
+				</div>
             </form>
         </div>
     </main>

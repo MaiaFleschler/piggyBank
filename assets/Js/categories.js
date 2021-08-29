@@ -28,10 +28,11 @@ var loadCategories = function () {
         var tdEdit = document.createElement('td');
         var tdDelete = document.createElement('td');
         var btnEdit = document.createElement('button');
+        btnEdit.classList.add('btn-action');
         btnEdit.setAttribute('onclick', "location.href=\"./categories-edit.html?id=" + category.id + "\"");
         var btnDelete = document.createElement('button');
-        //   btnEdit.dataset.id = `${category.id}`;
         btnDelete.dataset.id = "" + category.id;
+        btnDelete.classList.add('btn-action');
         var textName = document.createTextNode(category.name);
         var textEdit = document.createTextNode('Edit');
         var textDelete = document.createTextNode('Delete');

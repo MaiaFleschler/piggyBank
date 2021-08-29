@@ -10,13 +10,21 @@ const createResumeTable = (description, character, amount) => {
     const tdCharacter = document.createElement('td');
     const tdAmount = document.createElement('td');
     const textDescription = document.createTextNode(description);
-    const textCharacter = document.createTextNode(character); 
+    let textCharacter;
+    if(character){
+        textCharacter = document.createTextNode(character); 
+    }else{
+        textCharacter = document.createTextNode("-"); 
+    }
     if(amount < 0){
-        const textAmount = document.createTextNode(`${amount}`);
+        const textAmount = document.createTextNode(`-$${(Number(amount))*-1}`);
         tdAmount.appendChild(textAmount);
         tdAmount.style.color = "red";
-    } else{
-        const textAmount = document.createTextNode(`${amount}`);
+    }else if(amount === 0){
+        const textAmount = document.createTextNode("-");
+        tdAmount.appendChild(textAmount);
+    }else{
+        const textAmount = document.createTextNode(`+ $${amount}`);
         tdAmount.appendChild(textAmount);
         tdAmount.style.color = "green";
     }
@@ -36,7 +44,7 @@ const getBalance = (array) =>{
     array.forEach(element => {
         if(element.type == "Income"){
             totalInc += Number(element.amount);
-        } else { 
+        }else { 
             totalExp += (Number(element.amount))*-1;
         }
     });
@@ -46,8 +54,8 @@ const getBalance = (array) =>{
 const getHigherIncome = (array) => {
     let higherIncome = 0;
     array.forEach(element => {
-        if(element.type == "Income" && element.amount >= higherIncome){
-            higherIncome = Number(element.amount); 
+        if(element.type == "Income"){
+            higherIncome += Number(element.amount); 
         } 
     });
     return higherIncome;
@@ -56,8 +64,8 @@ const getHigherIncome = (array) => {
 const getHigherExpense = (array) => {
     let higherExpense = 0;
     array.forEach(element => {
-        if(element.type == "Expense" && element.amount > higherExpense){
-            higherExpense = Number(element.amount);
+        if(element.type == "Expense"){
+            higherExpense += Number(element.amount);
         }
     });
     return higherExpense;
@@ -126,11 +134,10 @@ const reportsTotalsByCategory = () =>{
         let totalExp= 0;
         let totalInc= 0;
         byCategory.forEach(element => {
-            
             if(element.type == "Income"){
                 totalInc += Number(element.amount);
             } else { 
-                totalExp += (Number(element.amount);
+                totalExp += (Number(element.amount)
             }
         });
         let balance = getBalance(byCategory);
@@ -198,7 +205,7 @@ const reportsResumeByMonth =()=>{
     createResumeTable(`Highest expense month`, lastHighestExpenseDate, lastHighestExpense   );
 }
 
-const reportsTotalsByDate = () => {
+const reportsTotalsByMonth = () => {
     const totalsOperations = getTotalsByDate();
 
     for (let year in totalsOperations){
@@ -215,19 +222,23 @@ const reportsTotalsByDate = () => {
             });
             balance = totalExp + totalInc;
             const date = `${month}/${year}`
-            createTotalsTable(date, totalInc, totalExp, balance, totalsByMonthTable);
+            createTotalsTable(date, totalInc, (Number(totalExp))*-1, balance, totalsByMonthTable);
         };
     }
 };
 
 let storage: LocalStorage = getLocalStorage();
 
-if(storage.operations.length > 3){
+//CHECK OPERATIONS TO REPORTS START
+const reportsImage = document.getElementById("reportsImage");
+const reportsTables = document.getElementById("reportsTables");
+
+if(storage.operations.length >= 3){
+    reportsImage.classList.add("d-none");
     reportsResumeByCategory();
     reportsResumeByMonth();
     reportsTotalsByCategory();
-    reportsTotalsByDate();
+    reportsTotalsByMonth();
 }else{
-    console.log(storage.operations.length)
-    alert('Not enough operations');
+    reportsTables.classList.add("d-none");
 }
