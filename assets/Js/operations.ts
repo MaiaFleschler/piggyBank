@@ -7,6 +7,44 @@ const selectorOrderBy = document.getElementById("selOrderBy");
 const selOrderBy = document.getElementById("selOrderBy");
 const mainImage = document.getElementById("mainImage");
 
+// BALANCE
+const incomeTotal = document.getElementById('incomeTotal');
+const expenseTotal = document.getElementById('expenseTotal');
+const balanceTotal = document.getElementById('total');
+
+const showBalance = (operations) => {
+    incomeTotal.innerText="";
+    expenseTotal.innerText="";
+    balanceTotal.innerText="";
+    let totalExp = 0;
+    let totalInc = 0;
+    operations.forEach(element => {
+        if(element.type == "Income"){
+            totalInc += Number(element.amount);
+        } else { 
+            totalExp += Number(element.amount);
+        }
+    });
+    const total = totalInc - totalExp;
+    const textIncome = document.createTextNode(`+$${totalInc}`);
+    const textExpense = document.createTextNode(`-$${totalExp}`);
+    let textTotal;
+    if(total>0){
+        textTotal = document.createTextNode(`+$${total}`);
+        balanceTotal.style.color = "green";
+    }else if (total<0){
+        textTotal = document.createTextNode(`-$${total*-1}`);
+        balanceTotal.style.color = "red";
+    } else{
+        textTotal = document.createTextNode(`$${total}`);
+    }
+    incomeTotal.style.color = "green";
+    expenseTotal.style.color = "red";
+    incomeTotal.appendChild(textIncome);
+    expenseTotal.appendChild(textExpense);
+    balanceTotal.appendChild(textTotal);
+}
+
 
 (<HTMLInputElement>inputDate).valueAsDate = new Date();
 
@@ -15,7 +53,10 @@ const deleteOperation = (e) => {
     let storage: LocalStorage = getLocalStorage();
     let updatedStorage = storage.operations.filter(item => item.id != idOperation);
     localStorage.setItem('piggy-storage', JSON.stringify({...storage, operations: updatedStorage}));
+    let newStorage: LocalStorage = getLocalStorage();
+    showBalance(newStorage.operations);
     loadOperations();
+    
 }
 
 const deleteOperationsWOCategory = () => {
@@ -117,6 +158,7 @@ const filterOperations = () => {
             createRowTable(operation);
         }
     }
+    showBalance(operationsByDate);
 }
 
 const loadOperationsBeginning = () => {
@@ -137,6 +179,7 @@ const loadOperationsBeginning = () => {
             createRowTable(operation);
         }
     }
+    showBalance(operationsFromToday);
 }
 const loadOperations = () => {
     filterOperations();
@@ -153,47 +196,6 @@ const loadOperations = () => {
 deleteOperationsWOCategory();
 loadOperations();
 loadOperationsBeginning();
-
-// BALANCE
-const incomeTotal = document.getElementById('incomeTotal');
-const expenseTotal = document.getElementById('expenseTotal');
-const balanceTotal = document.getElementById('total');
-
-const showBalance = () => {
-    let storage: LocalStorage = getLocalStorage();
-    let totalExp = 0;
-    let totalInc = 0;
-    storage.operations.forEach(element => {
-        if(element.type == "Income"){
-            totalInc += Number(element.amount);
-        } else { 
-            totalExp += (Number(element.amount))*-1;
-        }
-    });
-    const total = totalInc + totalExp;
-    const pIncome = document.createElement('p');
-    pIncome.style.color = "green";
-    const pExpense = document.createElement('p');
-    pExpense.style.color = "red";
-    const pTotal = document.createElement('p');
-    const textIncome = document.createTextNode(`+$${totalInc}`);
-    const textExpense = document.createTextNode(`-$${(Number(totalExp))*-1}`);
-    let textTotal;
-    if(total){
-        textTotal = document.createTextNode(`+$${total}`);
-        pTotal.style.color = "green";
-    }else{
-        textTotal = document.createTextNode(`-$${total}`);
-        pTotal.style.color = "red";
-    }
-    pIncome.appendChild(textIncome);
-    pExpense.appendChild(textExpense);
-    pTotal.appendChild(textTotal);
-    incomeTotal.appendChild(pIncome);
-    expenseTotal.appendChild(pExpense);
-    balanceTotal.appendChild(pTotal);
-}
-showBalance();
 
 // HIDE FILTERS
 const filtersForm = document.getElementById("filtersForm");

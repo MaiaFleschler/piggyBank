@@ -6,6 +6,7 @@ var totalsByMonthTable = document.getElementById('totalsByMonthTable');
 var createResumeTable = function (description, character, amount) {
     var tr = document.createElement('tr');
     var tdDescription = document.createElement('td');
+    tdDescription.classList.add("boldLetters");
     var tdCharacter = document.createElement('td');
     var tdAmount = document.createElement('td');
     var textDescription = document.createTextNode(description);
@@ -26,7 +27,7 @@ var createResumeTable = function (description, character, amount) {
         tdAmount.appendChild(textAmount);
     }
     else {
-        var textAmount = document.createTextNode("+ $" + amount);
+        var textAmount = document.createTextNode("+$" + amount);
         tdAmount.appendChild(textAmount);
         tdAmount.style.color = "green";
     }
@@ -45,10 +46,10 @@ var getBalance = function (array) {
             totalInc += Number(element.amount);
         }
         else {
-            totalExp += (Number(element.amount)) * -1;
+            totalExp += Number(element.amount);
         }
     });
-    return totalInc + totalExp;
+    return totalInc - totalExp;
 };
 var getHigherIncome = function (array) {
     var higherIncome = 0;
@@ -103,9 +104,14 @@ var createTotalsTable = function (principalCol, incomes, expenses, balance, domT
     var tdExpenses = document.createElement('td');
     var tdBalance = document.createElement('td');
     var textCategory = document.createTextNode(principalCol);
-    var textIncomes = document.createTextNode("+ $" + incomes);
-    var textExpenses = document.createTextNode("- $" + expenses);
-    var textBalance = document.createTextNode("$" + balance);
+    var textIncomes = document.createTextNode("+$" + incomes);
+    var textExpenses = document.createTextNode("-$" + expenses);
+    if (balance >= 0) {
+        var textBalance = document.createTextNode("+$" + balance);
+    }
+    else {
+        var textBalance = document.createTextNode("-$" + balance * -1);
+    }
     tdCategory.appendChild(textCategory);
     tdIncomes.appendChild(textIncomes);
     tdExpenses.appendChild(textExpenses);
@@ -207,15 +213,15 @@ var reportsTotalsByMonth = function () {
         for (var month in totalsOperations[year]) {
             totalsOperations[year][month].forEach(function (element) {
                 if (Number(element) < 0) {
-                    totalExp += Number(element);
+                    totalExp += Number(element) * -1;
                 }
                 else {
                     totalInc += Number(element);
                 }
             });
-            balance = totalExp + totalInc;
+            balance = totalInc - totalExp;
             var date = month + "/" + year;
-            createTotalsTable(date, totalInc, (Number(totalExp)) * -1, balance, totalsByMonthTable);
+            createTotalsTable(date, totalInc, totalExp, balance, totalsByMonthTable);
         }
         ;
     };

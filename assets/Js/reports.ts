@@ -7,6 +7,7 @@ const totalsByMonthTable = document.getElementById('totalsByMonthTable');
 const createResumeTable = (description, character, amount) => {
     const tr = document.createElement('tr');
     const tdDescription = document.createElement('td');
+    tdDescription.classList.add("bold");
     const tdCharacter = document.createElement('td');
     const tdAmount = document.createElement('td');
     const textDescription = document.createTextNode(description);
@@ -24,13 +25,12 @@ const createResumeTable = (description, character, amount) => {
         const textAmount = document.createTextNode("-");
         tdAmount.appendChild(textAmount);
     }else{
-        const textAmount = document.createTextNode(`+ $${amount}`);
+        const textAmount = document.createTextNode(`+$${amount}`);
         tdAmount.appendChild(textAmount);
         tdAmount.style.color = "green";
     }
     tdDescription.appendChild(textDescription);
     tdCharacter.appendChild(textCharacter);
-
     tr.appendChild(tdDescription);
     tr.appendChild(tdCharacter);
     tr.appendChild(tdAmount);
@@ -45,10 +45,10 @@ const getBalance = (array) =>{
         if(element.type == "Income"){
             totalInc += Number(element.amount);
         }else { 
-            totalExp += (Number(element.amount))*-1;
+            totalExp += Number(element.amount);
         }
     });
-    return totalInc + totalExp;
+    return totalInc - totalExp;
 }
 
 const getHigherIncome = (array) => {
@@ -108,9 +108,13 @@ const createTotalsTable = (principalCol, incomes, expenses, balance, domTable) =
     const tdExpenses = document.createElement('td');
     const tdBalance = document.createElement('td');
     const textCategory = document.createTextNode(principalCol);
-    const textIncomes = document.createTextNode(`+ $${incomes}`); 
-    const textExpenses = document.createTextNode(`- $${expenses}`); 
-    const textBalance = document.createTextNode(`$${balance}`); 
+    const textIncomes = document.createTextNode(`+$${incomes}`); 
+    const textExpenses = document.createTextNode(`-$${expenses}`);
+    if(balance>=0){ 
+        const textBalance = document.createTextNode(`+$${balance}`);
+    } else {
+        const textBalance = document.createTextNode(`-$${balance*-1}`);
+    }
     tdCategory.appendChild(textCategory);
     tdIncomes.appendChild(textIncomes);
     tdExpenses.appendChild(textExpenses);
@@ -137,13 +141,13 @@ const reportsTotalsByCategory = () =>{
             if(element.type == "Income"){
                 totalInc += Number(element.amount);
             } else { 
-                totalExp += (Number(element.amount)
+                totalExp += (Number(element.amount);
             }
         });
         let balance = getBalance(byCategory);
         createTotalsTable(element.name, totalInc, totalExp, balance, totalsByCategoryTable);
-    }
-};
+    });
+}
 
 
 // RESUME AND TOTALS BY MONTH
@@ -215,14 +219,14 @@ const reportsTotalsByMonth = () => {
         for (let month in totalsOperations[year]){
             totalsOperations[year][month].forEach(element => {
                 if(Number(element) < 0){
-                   totalExp += Number(element);
+                   totalExp += Number(element)*-1;
                 } else { 
                     totalInc += Number(element);
                 }
             });
-            balance = totalExp + totalInc;
+            balance = totalInc-totalExp;
             const date = `${month}/${year}`
-            createTotalsTable(date, totalInc, (Number(totalExp))*-1, balance, totalsByMonthTable);
+            createTotalsTable(date, totalInc, totalExp, balance, totalsByMonthTable);
         };
     }
 };
@@ -239,6 +243,6 @@ if(storage.operations.length >= 3){
     reportsResumeByMonth();
     reportsTotalsByCategory();
     reportsTotalsByMonth();
-}else{
+} else {
     reportsTables.classList.add("d-none");
 }

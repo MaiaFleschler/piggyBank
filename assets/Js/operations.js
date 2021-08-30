@@ -17,12 +17,53 @@ var inputDate = document.getElementById("inpDate");
 var selectorOrderBy = document.getElementById("selOrderBy");
 var selOrderBy = document.getElementById("selOrderBy");
 var mainImage = document.getElementById("mainImage");
+// BALANCE
+var incomeTotal = document.getElementById('incomeTotal');
+var expenseTotal = document.getElementById('expenseTotal');
+var balanceTotal = document.getElementById('total');
+var showBalance = function (operations) {
+    incomeTotal.innerText = "";
+    expenseTotal.innerText = "";
+    balanceTotal.innerText = "";
+    var totalExp = 0;
+    var totalInc = 0;
+    operations.forEach(function (element) {
+        if (element.type == "Income") {
+            totalInc += Number(element.amount);
+        }
+        else {
+            totalExp += Number(element.amount);
+        }
+    });
+    var total = totalInc - totalExp;
+    var textIncome = document.createTextNode("+$" + totalInc);
+    var textExpense = document.createTextNode("-$" + totalExp);
+    var textTotal;
+    if (total > 0) {
+        textTotal = document.createTextNode("+$" + total);
+        balanceTotal.style.color = "green";
+    }
+    else if (total < 0) {
+        textTotal = document.createTextNode("-$" + total * -1);
+        balanceTotal.style.color = "red";
+    }
+    else {
+        textTotal = document.createTextNode("$" + total);
+    }
+    incomeTotal.style.color = "green";
+    expenseTotal.style.color = "red";
+    incomeTotal.appendChild(textIncome);
+    expenseTotal.appendChild(textExpense);
+    balanceTotal.appendChild(textTotal);
+};
 inputDate.valueAsDate = new Date();
 var deleteOperation = function (e) {
     var idOperation = e.target.dataset.id;
     var storage = getLocalStorage();
     var updatedStorage = storage.operations.filter(function (item) { return item.id != idOperation; });
     localStorage.setItem('piggy-storage', JSON.stringify(__assign(__assign({}, storage), { operations: updatedStorage })));
+    var newStorage = getLocalStorage();
+    showBalance(newStorage.operations);
     loadOperations();
 };
 var deleteOperationsWOCategory = function () {
@@ -121,6 +162,7 @@ var filterOperations = function () {
             createRowTable(operation);
         }
     }
+    showBalance(operationsByDate);
 };
 var loadOperationsBeginning = function () {
     var storage = getLocalStorage();
@@ -141,6 +183,7 @@ var loadOperationsBeginning = function () {
             createRowTable(operation);
         }
     }
+    showBalance(operationsFromToday);
 };
 var loadOperations = function () {
     filterOperations();
@@ -156,47 +199,6 @@ var loadOperations = function () {
 deleteOperationsWOCategory();
 loadOperations();
 loadOperationsBeginning();
-// BALANCE
-var incomeTotal = document.getElementById('incomeTotal');
-var expenseTotal = document.getElementById('expenseTotal');
-var balanceTotal = document.getElementById('total');
-var showBalance = function () {
-    var storage = getLocalStorage();
-    var totalExp = 0;
-    var totalInc = 0;
-    storage.operations.forEach(function (element) {
-        if (element.type == "Income") {
-            totalInc += Number(element.amount);
-        }
-        else {
-            totalExp += (Number(element.amount)) * -1;
-        }
-    });
-    var total = totalInc + totalExp;
-    var pIncome = document.createElement('p');
-    pIncome.style.color = "green";
-    var pExpense = document.createElement('p');
-    pExpense.style.color = "red";
-    var pTotal = document.createElement('p');
-    var textIncome = document.createTextNode("+$" + totalInc);
-    var textExpense = document.createTextNode("-$" + (Number(totalExp)) * -1);
-    var textTotal;
-    if (total) {
-        textTotal = document.createTextNode("+$" + total);
-        pTotal.style.color = "green";
-    }
-    else {
-        textTotal = document.createTextNode("-$" + total);
-        pTotal.style.color = "red";
-    }
-    pIncome.appendChild(textIncome);
-    pExpense.appendChild(textExpense);
-    pTotal.appendChild(textTotal);
-    incomeTotal.appendChild(pIncome);
-    expenseTotal.appendChild(pExpense);
-    balanceTotal.appendChild(pTotal);
-};
-showBalance();
 // HIDE FILTERS
 var filtersForm = document.getElementById("filtersForm");
 var hideFilters = document.getElementById("hideFilters");

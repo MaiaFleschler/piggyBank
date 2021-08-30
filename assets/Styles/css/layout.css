@@ -28,6 +28,61 @@ body{
 .btn-action:hover{
     color: #e98f8eea;
 }
-.secondary-title{
-    font-weight: 600;
+.boldLetters{
+    font-weight: 700;
+}
+
+/* Tables responsive */
+@media only screen and (max-width: 760px) {
+
+	/* Force table to not be like tables anymore */
+	#operationsTable table, #totalsByCategoryTableResp table, #totalsByMonthTableResp table, #resumeTableResp table, #operationsTable thead, #totalsByCategoryTableResp thead, #totalsByMonthTableResp thead #resumeTableResp thead, #operationsTable tbody, #totalsByCategoryTableResp tbody, #totalsByMonthTableResp tbody, #resumeTableResp tbody, #operationsTable th, #totalsByCategoryTableResp th, #totalsByMonthTableResp th, #resumeTableResp th, #operationsTable td, #totalsByCategoryTableResp td, #totalsByMonthTableResp td, #resumeTableResp td, #operationsTable tr, #totalsByCategoryTableResp tr, #totalsByMonthTableResp tr, #resumeTableResp tr { 
+		display: block; 
+	}
+	
+	/* Hide table headers (but not display: none;, for accessibility) */
+	#operationsTable thead tr, #totalsByCategoryTableResp thead tr, #totalsByMonthTableResp thead tr { 
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+	
+	#operationsTable tr, #totalsByCategoryTableResp tr, #totalsByMonthTableResp tr { 
+        border: 1px solid #ccc;  
+        margin-top: 10px;
+    }
+	
+	#operationsTable td, #totalsByCategoryTableResp td, #totalsByMonthTableResp td { 
+		/* Behave  like a "row" */
+		border: none;
+		border-bottom: 1px solid #eee; 
+		position: relative;
+		padding-left: 42%; 
+        
+	}
+	
+	#operationsTable td:before, #totalsByCategoryTableResp td:before, #totalsByMonthTableResp td:before { 
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 6px;
+		left: 6px;
+		width: 45%; 
+		padding-right: 10px; 
+		white-space: nowrap;
+	}
+	
+    #operationsTable td:nth-of-type(1):before { content: "Description"; color: #cc716fea;}
+    #operationsTable td:nth-of-type(2):before { content: "Category"; color: #cc716fea;}
+	#operationsTable td:nth-of-type(3):before { content: "Date"; color: #cc716fea;}
+	#operationsTable td:nth-of-type(4):before { content: "Amount"; color: #cc716fea;}
+	#operationsTable td:nth-of-type(5):before { content: "Actions"; color: #cc716fea;}
+    #totalsByCategoryTableResp td:nth-of-type(1):before { content: "Category"; color: #cc716fea;}
+    #totalsByCategoryTableResp td:nth-of-type(2):before { content: "Incomes"; color: #cc716fea;}
+    #totalsByCategoryTableResp td:nth-of-type(3):before { content: "Expenses"; color: #cc716fea;}
+    #totalsByCategoryTableResp td:nth-of-type(4):before { content: "Balance"; color: #cc716fea;}
+    #totalsByMonthTableResp td:nth-of-type(1):before { content: "Date"; color: #cc716fea;}
+    #totalsByMonthTableResp td:nth-of-type(2):before { content: "Incomes"; color: #cc716fea;}
+    #totalsByMonthTableResp td:nth-of-type(3):before { content: "Expenses"; color: #cc716fea;}
+    #totalsByMonthTableResp td:nth-of-type(4):before { content: "Balance"; color: #cc716fea;}
 }

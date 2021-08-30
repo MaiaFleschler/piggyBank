@@ -7,6 +7,11 @@
     font-size: 2rem;
     font-weight: 600;
 }
+.navbar-light .navbar-toggler{
+    color: white;
+    border: none;
+    font-size: 2rem;
+}
 .nav-item{
     margin-right: 5px;
 }
