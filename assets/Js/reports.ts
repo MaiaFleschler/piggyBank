@@ -110,10 +110,11 @@ const createTotalsTable = (principalCol, incomes, expenses, balance, domTable) =
     const textCategory = document.createTextNode(principalCol);
     const textIncomes = document.createTextNode(`+$${incomes}`); 
     const textExpenses = document.createTextNode(`-$${expenses}`);
+    let textBalance;
     if(balance>=0){ 
-        const textBalance = document.createTextNode(`+$${balance}`);
+        textBalance = document.createTextNode(`+$${balance}`);
     } else {
-        const textBalance = document.createTextNode(`-$${balance*-1}`);
+        textBalance = document.createTextNode(`-$${balance*-1}`);
     }
     tdCategory.appendChild(textCategory);
     tdIncomes.appendChild(textIncomes);
@@ -141,7 +142,7 @@ const reportsTotalsByCategory = () =>{
             if(element.type == "Income"){
                 totalInc += Number(element.amount);
             } else { 
-                totalExp += (Number(element.amount);
+                totalExp += Number(element.amount);
             }
         });
         let balance = getBalance(byCategory);
@@ -213,10 +214,10 @@ const reportsTotalsByMonth = () => {
     const totalsOperations = getTotalsByDate();
 
     for (let year in totalsOperations){
-        let totalExp = 0;
-        let totalInc = 0;
-        let balance = 0;
         for (let month in totalsOperations[year]){
+            let totalExp = 0;
+            let totalInc = 0;
+            let balance = 0;
             totalsOperations[year][month].forEach(element => {
                 if(Number(element) < 0){
                    totalExp += Number(element)*-1;

@@ -6,7 +6,7 @@ var totalsByMonthTable = document.getElementById('totalsByMonthTable');
 var createResumeTable = function (description, character, amount) {
     var tr = document.createElement('tr');
     var tdDescription = document.createElement('td');
-    tdDescription.classList.add("boldLetters");
+    tdDescription.classList.add("bold");
     var tdCharacter = document.createElement('td');
     var tdAmount = document.createElement('td');
     var textDescription = document.createTextNode(description);
@@ -106,11 +106,12 @@ var createTotalsTable = function (principalCol, incomes, expenses, balance, domT
     var textCategory = document.createTextNode(principalCol);
     var textIncomes = document.createTextNode("+$" + incomes);
     var textExpenses = document.createTextNode("-$" + expenses);
+    var textBalance;
     if (balance >= 0) {
-        var textBalance = document.createTextNode("+$" + balance);
+        textBalance = document.createTextNode("+$" + balance);
     }
     else {
-        var textBalance = document.createTextNode("-$" + balance * -1);
+        textBalance = document.createTextNode("-$" + balance * -1);
     }
     tdCategory.appendChild(textCategory);
     tdIncomes.appendChild(textIncomes);
@@ -136,7 +137,7 @@ var reportsTotalsByCategory = function () {
                 totalInc += Number(element.amount);
             }
             else {
-                totalExp += (Number(element.amount));
+                totalExp += Number(element.amount);
             }
         });
         var balance = getBalance(byCategory);
@@ -206,11 +207,11 @@ var reportsResumeByMonth = function () {
 };
 var reportsTotalsByMonth = function () {
     var totalsOperations = getTotalsByDate();
-    var _loop_3 = function (year) {
-        var totalExp = 0;
-        var totalInc = 0;
-        var balance = 0;
-        for (var month in totalsOperations[year]) {
+    for (var year in totalsOperations) {
+        var _loop_3 = function (month) {
+            var totalExp = 0;
+            var totalInc = 0;
+            var balance = 0;
             totalsOperations[year][month].forEach(function (element) {
                 if (Number(element) < 0) {
                     totalExp += Number(element) * -1;
@@ -222,11 +223,11 @@ var reportsTotalsByMonth = function () {
             balance = totalInc - totalExp;
             var date = month + "/" + year;
             createTotalsTable(date, totalInc, totalExp, balance, totalsByMonthTable);
+        };
+        for (var month in totalsOperations[year]) {
+            _loop_3(month);
         }
         ;
-    };
-    for (var year in totalsOperations) {
-        _loop_3(year);
     }
 };
 var storage = getLocalStorage();
